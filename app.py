@@ -1,7 +1,6 @@
 import streamlit as st
 from PIL import Image
 import os
-import base64
 
 # =========================================
 # CONFIG PÁGINA
@@ -24,8 +23,7 @@ with col2:
 
     st.image(
         logo,
-        use_container_width=True,
-        width=100
+        width=350
     )
 
     st.markdown(
@@ -81,7 +79,20 @@ EXTENSOES_PDF = [
 # LISTAR PAUTAS
 # =========================================
 
-pautas = os.listdir(PASTA_RAIZ)
+pautas = []
+
+for item in os.listdir(PASTA_RAIZ):
+
+    caminho = os.path.join(
+        PASTA_RAIZ,
+        item
+    )
+
+    if os.path.isdir(caminho):
+
+        pautas.append(item)
+
+pautas.sort()
 
 # =========================================
 # FILTRO PAUTA
@@ -111,9 +122,18 @@ for p in pastas_para_ler:
         p
     )
 
-    for f in os.listdir(caminho_pauta):
+    if os.path.isdir(caminho_pauta):
 
-        fornecedores.append(f)
+        for f in os.listdir(caminho_pauta):
+
+            caminho_fornecedor = os.path.join(
+                caminho_pauta,
+                f
+            )
+
+            if os.path.isdir(caminho_fornecedor):
+
+                fornecedores.append(f)
 
 fornecedor = st.sidebar.selectbox(
     "Fornecedor",
@@ -132,7 +152,7 @@ pesquisa = st.sidebar.text_input(
 # FEED
 # =========================================
 
-st.subheader("MECÂNICAS ATIVAS")
+st.subheader("Feed de Mecânicas")
 
 contador = 0
 
@@ -147,6 +167,9 @@ for p in pastas_para_ler:
         p
     )
 
+    if not os.path.isdir(caminho_pauta):
+        continue
+
     for f in os.listdir(caminho_pauta):
 
         if fornecedor != "Todos" and f != fornecedor:
@@ -157,12 +180,14 @@ for p in pastas_para_ler:
             f
         )
 
-        for arquivo in os.listdir(caminho_fornecedor):
+        if not os.path.isdir(caminho_fornecedor):
+            continue
 
-            if pesquisa:
+        arquivos = os.listdir(caminho_fornecedor)
 
-                if pesquisa.lower() not in arquivo.lower():
-                    continue
+        arquivos.sort(reverse=True)
+
+        for arquivo in arquivos:
 
             caminho_arquivo = os.path.join(
                 caminho_fornecedor,
@@ -173,7 +198,31 @@ for p in pastas_para_ler:
                 arquivo
             )[1].lower()
 
+            # =====================================
+            # FILTRAR EXTENSÕES
+            # =====================================
+
+            if (
+                extensao not in EXTENSOES_IMAGEM
+                and extensao not in EXTENSOES_PDF
+            ):
+                continue
+
+            # =====================================
+            # PESQUISA
+            # =====================================
+
+            if pesquisa:
+
+                if pesquisa.lower() not in arquivo.lower():
+
+                    continue
+
             contador += 1
+
+            # =====================================
+            # CARD
+            # =====================================
 
             with st.container():
 
@@ -181,50 +230,62 @@ for p in pastas_para_ler:
 
                 st.caption(p)
 
-                # =====================
+                # =================================
                 # IMAGEM
-                # =====================
+                # =================================
 
                 if extensao in EXTENSOES_IMAGEM:
 
-                    imagem = Image.open(
-                        caminho_arquivo
-                    )
+                    try:
 
-                    st.image(
-                        imagem,
-                        use_container_width=True
-                    )
+                        imagem = Image.open(
+                            caminho_arquivo
+                        )
 
-                # =====================
+                        st.image(
+                            imagem,
+                            use_container_width=True
+                        )
+
+                    except Exception as erro:
+
+                        st.error(
+                            f"Erro ao abrir imagem"
+                        )
+
+                        st.write(erro)
+
+                # =================================
                 # PDF
-                # =====================
+                # =================================
 
                 elif extensao in EXTENSOES_PDF:
 
-                    with open(
-                        caminho_arquivo,
-                        "rb"
-                    ) as pdf_file:
-
-                        base64_pdf = base64.b64encode(
-                            pdf_file.read()
-                        ).decode("utf-8")
-
-                    pdf_display = f"""
-                    <iframe
-                        src="data:application/pdf;base64,{base64_pdf}"
-                        width="100%"
-                        height="700">
-                    </iframe>
-                    """
-
-                    st.markdown(
-                        pdf_display,
-                        unsafe_allow_html=True
+                    st.info(
+                        f"📄 PDF disponível: {arquivo}"
                     )
 
-                st.write(arquivo)
+                    try:
+
+                        with open(
+                            caminho_arquivo,
+                            "rb"
+                        ) as pdf_file:
+
+                            st.download_button(
+                                label="📥 Abrir / Baixar PDF",
+                                data=pdf_file,
+                                file_name=arquivo,
+                                mime="application/pdf"
+                            )
+
+                    except Exception as erro:
+
+                        st.error(
+                            "Erro ao abrir PDF"
+                        )
+
+                        st.write(erro)
 
                 st.divider()
 
