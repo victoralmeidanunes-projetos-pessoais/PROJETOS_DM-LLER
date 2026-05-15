@@ -1,5 +1,6 @@
 import streamlit as st
 from PIL import Image
+from streamlit_pdf_viewer import pdf_viewer
 import os
 
 # =========================================
@@ -10,6 +11,29 @@ st.set_page_config(
     page_title="Campanhas",
     layout="wide"
 )
+
+# =========================================
+# CSS
+# =========================================
+
+st.markdown("""
+<style>
+
+html, body, [class*="css"]  {
+    background-color: #0E1117;
+    color: white;
+}
+
+.block-container {
+    padding-top: 2rem;
+}
+
+[data-testid="stVerticalBlock"]{
+    gap: 0.5rem;
+}
+
+</style>
+""", unsafe_allow_html=True)
 
 # =========================================
 # CABEÇALHO
@@ -81,16 +105,18 @@ EXTENSOES_PDF = [
 
 pautas = []
 
-for item in os.listdir(PASTA_RAIZ):
+if os.path.exists(PASTA_RAIZ):
 
-    caminho = os.path.join(
-        PASTA_RAIZ,
-        item
-    )
+    for item in os.listdir(PASTA_RAIZ):
 
-    if os.path.isdir(caminho):
+        caminho = os.path.join(
+            PASTA_RAIZ,
+            item
+        )
 
-        pautas.append(item)
+        if os.path.isdir(caminho):
+
+            pautas.append(item)
 
 pautas.sort()
 
@@ -135,9 +161,17 @@ for p in pastas_para_ler:
 
                 fornecedores.append(f)
 
+fornecedores = sorted(
+    list(set(fornecedores))
+)
+
+# =========================================
+# FILTRO FORNECEDOR
+# =========================================
+
 fornecedor = st.sidebar.selectbox(
     "Fornecedor",
-    ["Todos"] + sorted(set(fornecedores))
+    ["Todos"] + fornecedores
 )
 
 # =========================================
@@ -157,7 +191,7 @@ st.subheader("Feed de Mecânicas")
 contador = 0
 
 # =========================================
-# LER ARQUIVOS
+# LOOP PRINCIPAL
 # =========================================
 
 for p in pastas_para_ler:
@@ -226,6 +260,10 @@ for p in pastas_para_ler:
 
             with st.container():
 
+                # =================================
+                # TÍTULO
+                # =================================
+
                 st.markdown(f"### {f}")
 
                 st.caption(p)
@@ -250,7 +288,7 @@ for p in pastas_para_ler:
                     except Exception as erro:
 
                         st.error(
-                            f"Erro ao abrir imagem"
+                            "Erro ao abrir imagem"
                         )
 
                         st.write(erro)
@@ -261,11 +299,21 @@ for p in pastas_para_ler:
 
                 elif extensao in EXTENSOES_PDF:
 
-                    st.info(
-                        f"📄 PDF disponível: {arquivo}"
-                    )
-
                     try:
+
+                        # =========================
+                        # VISUALIZADOR PDF
+                        # =========================
+
+                        pdf_viewer(
+                            caminho_arquivo,
+                            width="100%",
+                            height=1200
+                        )
+
+                        # =========================
+                        # DOWNLOAD PDF
+                        # =========================
 
                         with open(
                             caminho_arquivo,
@@ -273,10 +321,11 @@ for p in pastas_para_ler:
                         ) as pdf_file:
 
                             st.download_button(
-                                label="📥 Abrir / Baixar PDF",
+                                label="📥 Baixar PDF",
                                 data=pdf_file,
                                 file_name=arquivo,
-                                mime="application/pdf"
+                                mime="application/pdf",
+                                use_container_width=True
                             )
 
                     except Exception as erro:
@@ -286,6 +335,10 @@ for p in pastas_para_ler:
                         )
 
                         st.write(erro)
+
+                # =================================
+                # DIVIDER
+                # =================================
 
                 st.divider()
 
