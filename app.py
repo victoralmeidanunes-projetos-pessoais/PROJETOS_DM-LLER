@@ -13,72 +13,6 @@ st.set_page_config(
 )
 
 # =========================================
-# CSS
-# =========================================
-
-st.markdown("""
-<style>
-
-html, body, [class*="css"]  {
-    background-color: #0E1117;
-    color: white;
-}
-
-.block-container {
-    padding-top: 2rem;
-}
-
-[data-testid="stVerticalBlock"]{
-    gap: 0.5rem;
-}
-
-</style>
-""", unsafe_allow_html=True)
-
-# =========================================
-# CABEÇALHO
-# =========================================
-
-logo = Image.open("imagens/logo.png")
-
-col1, col2, col3 = st.columns([1,2,1])
-
-with col2:
-
-    st.image(
-        logo,
-        width=350
-    )
-
-    st.markdown(
-        """
-        <h1 style='text-align: center;'>
-        CAMPANHAS DE INCENTIVOS ATIVOS
-        </h1>
-        """,
-        unsafe_allow_html=True
-    )
-
-    st.markdown(
-        """
-        <p style='text-align: center;
-        font-size:18px;
-        color:gray;'>
-        DMULLER DISTRIBUIDORA
-        </p>
-        """,
-        unsafe_allow_html=True
-    )
-
-st.divider()
-
-# =========================================
-# MENU LATERAL
-# =========================================
-
-st.sidebar.title("📁 CAMPANHAS")
-
-# =========================================
 # PASTA PRINCIPAL
 # =========================================
 
@@ -98,6 +32,258 @@ EXTENSOES_IMAGEM = [
 EXTENSOES_PDF = [
     ".pdf"
 ]
+
+# =========================================
+# CSS
+# =========================================
+
+st.markdown("""
+<style>
+
+/* =====================================
+FUNDO GERAL
+===================================== */
+
+html, body, [class*="css"]  {
+    background-color: #f5f5f5;
+    color: #131203;
+}
+
+/* =====================================
+CONTAINER PRINCIPAL
+===================================== */
+
+.block-container {
+    padding-top: 1.5rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+}
+
+/* =====================================
+SIDEBAR
+===================================== */
+
+[data-testid="stSidebar"] {
+    background-color: #0d4caa;
+}
+
+[data-testid="stSidebar"] * {
+    color: white;
+}
+
+/* =====================================
+CAMPOS
+===================================== */
+
+.stTextInput input,
+.stSelectbox div[data-baseweb="select"] {
+    border-radius: 10px;
+}
+
+/* =====================================
+TÍTULOS
+===================================== */
+
+.titulo-principal{
+    font-size: 42px;
+    font-weight: 700;
+    color: #0b459b;
+    margin-bottom: 0;
+}
+
+.subtitulo{
+    font-size: 16px;
+    color: #555;
+    margin-top: -10px;
+}
+
+/* =====================================
+CARDS RESUMO
+===================================== */
+
+.card-resumo{
+    background: white;
+    border-radius: 14px;
+    padding: 18px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    margin-bottom: 15px;
+}
+
+.card-titulo{
+    font-size: 18px;
+    font-weight: 700;
+    color: #0b459b;
+    margin-bottom: 10px;
+}
+
+/* =====================================
+FEED
+===================================== */
+
+[data-testid="stVerticalBlock"]{
+    gap: 0.7rem;
+}
+
+</style>
+""", unsafe_allow_html=True)
+
+# =========================================
+# LOGO
+# =========================================
+
+logo = Image.open("imagens/logo.png")
+
+# =========================================
+# MENU LATERAL
+# =========================================
+
+st.sidebar.image(
+    logo,
+    use_container_width=True
+)
+
+st.sidebar.title("📁 CAMPANHAS")
+
+# =========================================
+# CONTADORES
+# =========================================
+
+contagem_pautas = {}
+contagem_fornecedores = {}
+
+if os.path.exists(PASTA_RAIZ):
+
+    for pauta_nome in os.listdir(PASTA_RAIZ):
+
+        caminho_pauta = os.path.join(
+            PASTA_RAIZ,
+            pauta_nome
+        )
+
+        if not os.path.isdir(caminho_pauta):
+            continue
+
+        total_pauta = 0
+
+        for fornecedor_nome in os.listdir(caminho_pauta):
+
+            caminho_fornecedor = os.path.join(
+                caminho_pauta,
+                fornecedor_nome
+            )
+
+            if not os.path.isdir(caminho_fornecedor):
+                continue
+
+            arquivos_validos = [
+
+                arq for arq in os.listdir(caminho_fornecedor)
+
+                if os.path.splitext(arq)[1].lower()
+                in EXTENSOES_IMAGEM + EXTENSOES_PDF
+            ]
+
+            quantidade = len(arquivos_validos)
+
+            total_pauta += quantidade
+
+            if fornecedor_nome not in contagem_fornecedores:
+
+                contagem_fornecedores[
+                    fornecedor_nome
+                ] = 0
+
+            contagem_fornecedores[
+                fornecedor_nome
+            ] += quantidade
+
+        contagem_pautas[
+            pauta_nome
+        ] = total_pauta
+
+# =========================================
+# CABEÇALHO
+# =========================================
+
+st.markdown(
+    """
+    <p class='titulo-principal'>
+    CAMPANHAS ATIVAS
+    </p>
+    """,
+    unsafe_allow_html=True
+)
+
+st.markdown(
+    """
+    <p class='subtitulo'>
+    Painel de campanhas e mecânicas vigentes
+    </p>
+    """,
+    unsafe_allow_html=True
+)
+
+col1, col2 = st.columns(2)
+
+# =========================================
+# RESUMO PAUTAS
+# =========================================
+
+with col1:
+
+    html_pautas = """
+    <div class='card-resumo'>
+    <div class='card-titulo'>
+    Campanhas por Pauta
+    </div>
+    """
+
+    for pauta, total in contagem_pautas.items():
+
+        html_pautas += f"""
+        <p>
+        <b>{pauta}</b>: {total}
+        </p>
+        """
+
+    html_pautas += "</div>"
+
+    st.markdown(
+        html_pautas,
+        unsafe_allow_html=True
+    )
+
+# =========================================
+# RESUMO FORNECEDORES
+# =========================================
+
+with col2:
+
+    html_fornecedor = """
+    <div class='card-resumo'>
+    <div class='card-titulo'>
+    Campanhas por Fornecedor
+    </div>
+    """
+
+    for fornecedor_nome, total in sorted(
+        contagem_fornecedores.items()
+    ):
+
+        html_fornecedor += f"""
+        <p>
+        <b>{fornecedor_nome}</b>: {total}
+        </p>
+        """
+
+    html_fornecedor += "</div>"
+
+    st.markdown(
+        html_fornecedor,
+        unsafe_allow_html=True
+    )
+
+st.divider()
 
 # =========================================
 # LISTAR PAUTAS
@@ -232,19 +418,11 @@ for p in pastas_para_ler:
                 arquivo
             )[1].lower()
 
-            # =====================================
-            # FILTRAR EXTENSÕES
-            # =====================================
-
             if (
                 extensao not in EXTENSOES_IMAGEM
                 and extensao not in EXTENSOES_PDF
             ):
                 continue
-
-            # =====================================
-            # PESQUISA
-            # =====================================
 
             if pesquisa:
 
@@ -254,23 +432,11 @@ for p in pastas_para_ler:
 
             contador += 1
 
-            # =====================================
-            # CARD
-            # =====================================
-
             with st.container():
-
-                # =================================
-                # TÍTULO
-                # =================================
 
                 st.markdown(f"### {f}")
 
                 st.caption(p)
-
-                # =================================
-                # IMAGEM
-                # =================================
 
                 if extensao in EXTENSOES_IMAGEM:
 
@@ -293,27 +459,15 @@ for p in pastas_para_ler:
 
                         st.write(erro)
 
-                # =================================
-                # PDF
-                # =================================
-
                 elif extensao in EXTENSOES_PDF:
 
                     try:
 
-                        # =========================
-                        # VISUALIZADOR PDF
-                        # =========================
-
                         pdf_viewer(
                             caminho_arquivo,
                             width="100%",
-                            height=1200
+                            height=500
                         )
-
-                        # =========================
-                        # DOWNLOAD PDF
-                        # =========================
 
                         with open(
                             caminho_arquivo,
@@ -335,10 +489,6 @@ for p in pastas_para_ler:
                         )
 
                         st.write(erro)
-
-                # =================================
-                # DIVIDER
-                # =================================
 
                 st.divider()
 
