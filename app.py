@@ -372,7 +372,7 @@ for pauta_nome, lista_fornecedores in fornecedores_por_pauta.items():
         unsafe_allow_html=True
     )
 
-    quantidade_colunas = 4
+    quantidade_colunas = 5gi
 
     colunas = st.columns(
         quantidade_colunas
