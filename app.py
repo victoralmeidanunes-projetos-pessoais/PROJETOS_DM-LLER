@@ -579,7 +579,7 @@ for p in pastas_para_ler:
 
                         pdf_viewer(
                             caminho_arquivo,
-                            width="15%",
+                            width="70%",
                             height=850
                         )
 
