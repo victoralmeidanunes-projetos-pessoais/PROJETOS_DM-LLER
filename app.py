@@ -274,10 +274,10 @@ total_campanhas = sum(
 # CABEÇALHO
 # =========================================
 
-st.header("    ")
+st.subheader("    ")
 
-st.title(
-    "CAMPANHAS ATIVAS DISTRIBUIDORA MÜLLER"
+st.header(
+    "CAMPANHAS ATIVAS"
 )
 
 st.caption(
@@ -288,7 +288,6 @@ st.caption(
 # RESUMO
 # =========================================
 
-st.markdown("### Resumo Geral")
 
 # =========================================
 # FORNECEDORES POR PAUTA
@@ -373,7 +372,7 @@ for pauta_nome, lista_fornecedores in fornecedores_por_pauta.items():
         unsafe_allow_html=True
     )
 
-    quantidade_colunas = 6
+    quantidade_colunas = 4
 
     colunas = st.columns(
         quantidade_colunas
