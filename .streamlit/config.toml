@@ -1,19 +1,11 @@
 [theme]
 
-# =====================================
-# CORES GERAIS DA TELA
-# =====================================
-
 primaryColor="#0b459b"
 
 backgroundColor="#f5f5f5"
 
+secondaryBackgroundColor="#0d4caa"
+
 textColor="#131203"
 
 font="sans serif"
-
-# =====================================
-# COR DO MENU / SIDEBAR
-# =====================================
-
-secondaryBackgroundColor="#0d4caa"

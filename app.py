@@ -44,7 +44,8 @@ st.markdown("""
 FUNDO GERAL
 ===================================== */
 
-html, body, [class*="css"]  {
+html, body, [class*="css"] {
+
     background-color: #f5f5f5;
     color: #131203;
 }
@@ -54,7 +55,8 @@ CONTAINER PRINCIPAL
 ===================================== */
 
 .block-container {
-    padding-top: 1.5rem;
+
+    padding-top: 1rem;
     padding-left: 2rem;
     padding-right: 2rem;
 }
@@ -64,64 +66,111 @@ SIDEBAR
 ===================================== */
 
 [data-testid="stSidebar"] {
-    background-color: #0d4caa;
-}
 
-[data-testid="stSidebar"] * {
-    color: white;
+    background: linear-gradient(
+        180deg,
+        #0d4caa 0%,
+        #0a3d86 100%
+    );
+
+    border-right: 1px solid rgba(255,255,255,0.08);
 }
 
 /* =====================================
-CAMPOS
+LOGO
 ===================================== */
 
-.stTextInput input,
+.logo-container {
+
+    background: rgba(255,255,255,0.08);
+
+    border-radius: 16px;
+
+    padding: 10px;
+
+    margin-bottom: 20px;
+
+    backdrop-filter: blur(6px);
+}
+
+/* =====================================
+TEXTOS MENU
+===================================== */
+
+[data-testid="stSidebar"] label,
+[data-testid="stSidebar"] .stMarkdown,
+[data-testid="stSidebar"] p,
+[data-testid="stSidebar"] span {
+
+    color: #ffffff !important;
+
+    font-weight: 500;
+}
+
+/* =====================================
+TÍTULO MENU
+===================================== */
+
+[data-testid="stSidebar"] h1 {
+
+    color: white !important;
+
+    font-size: 26px !important;
+
+    font-weight: 700 !important;
+}
+
+/* =====================================
+SELECTBOX
+===================================== */
+
 .stSelectbox div[data-baseweb="select"] {
-    border-radius: 10px;
+
+    background-color: rgba(255,255,255,0.96);
+
+    border-radius: 12px;
+
+    border: none;
+}
+
+.stSelectbox div[data-baseweb="select"] > div {
+
+    color: #131203 !important;
+
+    font-weight: 500;
 }
 
 /* =====================================
-TÍTULOS
+INPUT TEXTO
 ===================================== */
 
-.titulo-principal{
-    font-size: 42px;
-    font-weight: 700;
-    color: #0b459b;
-    margin-bottom: 0;
-}
+.stTextInput input {
 
-.subtitulo{
-    font-size: 16px;
-    color: #555;
-    margin-top: -10px;
+    background-color: rgba(255,255,255,0.96) !important;
+
+    color: #131203 !important;
+
+    border-radius: 12px !important;
+
+    border: none !important;
 }
 
 /* =====================================
-CARDS RESUMO
+RESUMO
 ===================================== */
 
-.card-resumo{
-    background: white;
-    border-radius: 14px;
-    padding: 18px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-    margin-bottom: 15px;
-}
+[data-testid="stAlert"] {
 
-.card-titulo{
-    font-size: 18px;
-    font-weight: 700;
-    color: #0b459b;
-    margin-bottom: 10px;
+    border-radius: 12px;
 }
 
 /* =====================================
 FEED
 ===================================== */
 
-[data-testid="stVerticalBlock"]{
-    gap: 0.7rem;
+[data-testid="stVerticalBlock"] {
+
+    gap: 0.6rem;
 }
 
 </style>
@@ -134,15 +183,27 @@ FEED
 logo = Image.open("imagens/logo.png")
 
 # =========================================
-# MENU LATERAL
+# SIDEBAR
 # =========================================
 
-st.sidebar.image(
-    logo,
-    use_container_width=True
-)
+with st.sidebar:
 
-st.sidebar.title("📁 CAMPANHAS")
+    st.markdown(
+        "<div class='logo-container'>",
+        unsafe_allow_html=True
+    )
+
+    st.image(
+        logo,
+        use_container_width=True
+    )
+
+    st.markdown(
+        "</div>",
+        unsafe_allow_html=True
+    )
+
+    st.title("📁 CAMPANHAS")
 
 # =========================================
 # CONTADORES
@@ -202,86 +263,62 @@ if os.path.exists(PASTA_RAIZ):
         ] = total_pauta
 
 # =========================================
+# TOTAL GERAL
+# =========================================
+
+total_campanhas = sum(
+    contagem_pautas.values()
+)
+
+# =========================================
 # CABEÇALHO
 # =========================================
 
-st.markdown(
-    """
-    <p class='titulo-principal'>
-    CAMPANHAS ATIVAS
-    </p>
-    """,
-    unsafe_allow_html=True
+st.title(
+    "CAMPANHAS ATIVAS DISTRIBUIDORA MÜLLER"
 )
 
-st.markdown(
-    """
-    <p class='subtitulo'>
-    Painel de campanhas e mecânicas vigentes
-    </p>
-    """,
-    unsafe_allow_html=True
+st.caption(
+    f"{total_campanhas} campanhas ativas cadastradas"
 )
 
-col1, col2 = st.columns(2)
-
 # =========================================
-# RESUMO PAUTAS
+# RESUMO
 # =========================================
 
-with col1:
+st.markdown("### Resumo Geral")
 
-    html_pautas = """
-    <div class='card-resumo'>
-    <div class='card-titulo'>
-    Campanhas por Pauta
-    </div>
-    """
+itens_resumo = []
 
-    for pauta, total in contagem_pautas.items():
+for pauta_nome, total in contagem_pautas.items():
 
-        html_pautas += f"""
-        <p>
-        <b>{pauta}</b>: {total}
-        </p>
-        """
-
-    html_pautas += "</div>"
-
-    st.markdown(
-        html_pautas,
-        unsafe_allow_html=True
+    itens_resumo.append(
+        f"📁 {pauta_nome}: {total}"
     )
 
-# =========================================
-# RESUMO FORNECEDORES
-# =========================================
+for fornecedor_nome, total in sorted(
+    contagem_fornecedores.items()
+):
 
-with col2:
-
-    html_fornecedor = """
-    <div class='card-resumo'>
-    <div class='card-titulo'>
-    Campanhas por Fornecedor
-    </div>
-    """
-
-    for fornecedor_nome, total in sorted(
-        contagem_fornecedores.items()
-    ):
-
-        html_fornecedor += f"""
-        <p>
-        <b>{fornecedor_nome}</b>: {total}
-        </p>
-        """
-
-    html_fornecedor += "</div>"
-
-    st.markdown(
-        html_fornecedor,
-        unsafe_allow_html=True
+    itens_resumo.append(
+        f"🏭 {fornecedor_nome}: {total}"
     )
+
+quantidade_colunas = 6
+
+colunas = st.columns(
+    quantidade_colunas
+)
+
+for i, item in enumerate(itens_resumo):
+
+    coluna = colunas[
+        i % quantidade_colunas
+    ]
+
+    with coluna:
+
+        st.info(item)
 
 st.divider()
 
@@ -466,7 +503,7 @@ for p in pastas_para_ler:
                         pdf_viewer(
                             caminho_arquivo,
                             width="100%",
-                            height=500
+                            height=850
                         )
 
                         with open(
