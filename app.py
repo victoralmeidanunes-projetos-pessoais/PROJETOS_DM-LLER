@@ -373,7 +373,7 @@ if fornecedores_por_pauta:
                 f"""
                 <div style="
                     background-color:#0d4caa;
-                    padding:4px;
+                    padding:2px;
                     border-radius:12px;
                     text-align:center;
                     color:white;
