@@ -360,11 +360,11 @@ for pauta_nome, lista_fornecedores in fornecedores_por_pauta.items():
         <div style="
             background-color:#0d4caa;
             padding:6px;
-            border-radius:12px;
+            border-radius:5px;
             text-align:center;
             color:white;
             font-weight:700;
-            margin-bottom:10px;
+            margin-bottom:8px;
         ">
             📁 {pauta_nome} | {total_pauta} campanhas
         </div>
