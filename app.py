@@ -80,15 +80,15 @@ SIDEBAR
 LOGO
 ===================================== */
 
-.logo-container {
+.logo-container { 
 
     background: rgba(255,255,255,0.08);
 
-    border-radius: 16px;
+    border-radius:0px;
 
-    padding: 10px;
+    padding: 0px;
 
-    margin-bottom: 20px;
+    margin-bottom: 1px;
 
     backdrop-filter: blur(6px);
 }
@@ -170,7 +170,7 @@ FEED
 
 [data-testid="stVerticalBlock"] {
 
-    gap: 0.6rem;
+    gap: 0.25rem;
 }
 
 </style>
@@ -203,7 +203,8 @@ with st.sidebar:
         unsafe_allow_html=True
     )
 
-    st.title("📁 CAMPANHAS")
+    st.title("🏭 FILTROS")
+
 
 # =========================================
 # CONTADORES
@@ -273,7 +274,7 @@ total_campanhas = sum(
 # =========================================
 # CABEÇALHO
 # =========================================
-
+st.header("    ")
 st.title(
     "CAMPANHAS ATIVAS DISTRIBUIDORA MÜLLER"
 )
@@ -409,7 +410,10 @@ pesquisa = st.sidebar.text_input(
 # FEED
 # =========================================
 
-st.subheader("Feed de Mecânicas")
+st.subheader("MECANICAS📃")
+
+st.divider()
+
 
 contador = 0
 
@@ -536,5 +540,5 @@ for p in pastas_para_ler:
 st.sidebar.divider()
 
 st.sidebar.write(
-    f"Arquivos encontrados: {contador}"
+    f"CAMPANHAS ATIVAS: {contador}"
 )
