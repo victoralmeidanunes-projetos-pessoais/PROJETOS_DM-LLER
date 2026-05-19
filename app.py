@@ -577,9 +577,9 @@ for p in pastas_para_ler:
 
                     try:
 
-                        pdf_viewer(1
+                        pdf_viewer(
                             caminho_arquivo,
-                            width="100%",
+                            width="15%",
                             height=850
                         )
 
