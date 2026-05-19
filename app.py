@@ -346,52 +346,55 @@ if os.path.exists(PASTA_RAIZ):
         ] = lista_fornecedores
 
 # =========================================
-# EXIBIR RESUMO EM COLUNAS
+# EXIBIR RESUMO
 # =========================================
 
-if fornecedores_por_pauta:
+for pauta_nome, lista_fornecedores in fornecedores_por_pauta.items():
+
+    total_pauta = contagem_pautas.get(
+        pauta_nome,
+        0
+    )
+
+    st.markdown(
+        f"""
+        <div style="
+            background-color:#0d4caa;
+            padding:6px;
+            border-radius:12px;
+            text-align:center;
+            color:white;
+            font-weight:700;
+            margin-bottom:10px;
+        ">
+            📁 {pauta_nome} | {total_pauta} campanhas
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    quantidade_colunas = 6
 
     colunas = st.columns(
-        len(fornecedores_por_pauta)
+        quantidade_colunas
     )
 
     for i, (
-        pauta_nome,
-        lista_fornecedores
-    ) in enumerate(
-        fornecedores_por_pauta.items()
-    ):
+        fornecedor_nome,
+        total
+    ) in enumerate(lista_fornecedores):
 
-        with colunas[i]:
+        coluna = colunas[
+            i % quantidade_colunas
+        ]
 
-            total_pauta = contagem_pautas.get(
-                pauta_nome,
-                0
+        with coluna:
+
+            st.info(
+                f"{fornecedor_nome}: {total}"
             )
 
-            st.markdown(
-                f"""
-                <div style="
-                    background-color:#0d4caa;
-                    padding:2px;
-                    border-radius:12px;
-                    text-align:center;
-                    color:white;
-                    font-weight:700;
-                    margin-bottom:10px;
-                ">
-                    📁 {pauta_nome}<br>
-                    {total_pauta} campanhas
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
-
-            for fornecedor_nome, total in lista_fornecedores:
-
-                st.info(
-                    f"{fornecedor_nome}: {total}"
-                )
+    st.markdown("<br>", unsafe_allow_html=True)
 
 st.divider()
 
