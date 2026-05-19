@@ -9,8 +9,6 @@ git add .
 
 git commit -m "%date% %time%"
 
-git push origin main
+git push
 
-echo.
-echo FINALIZADO!
-pause
+exit
