@@ -203,7 +203,7 @@ with st.sidebar:
         unsafe_allow_html=True
     )
 
-    st.title("🏭 FILTROS")
+    st.title("FILTROS")
 
 # =========================================
 # CONTADORES
@@ -482,7 +482,7 @@ pesquisa = st.sidebar.text_input(
 # FEED
 # =========================================
 
-st.subheader("MECANICAS📃")
+st.subheader("MECÂNICAS📃")
 
 st.divider()
 
