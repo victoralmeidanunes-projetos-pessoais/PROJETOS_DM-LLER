@@ -613,5 +613,5 @@ for p in pastas_para_ler:
 st.sidebar.divider()
 
 st.sidebar.write(
-    f"CAMPANHAS ATIVAS 25 : {contador}"
+    f"CAMPANHAS ATIVAS: {contador}"
 )
