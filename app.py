@@ -593,7 +593,7 @@ for p in pastas_para_ler:
                                 data=pdf_file,
                                 file_name=arquivo,
                                 mime="application/pdf",
-                                use_container_width=True
+                                use_container_width=False
                             )
 
                     except Exception as erro:
