@@ -358,7 +358,7 @@ for pauta_nome, lista_fornecedores in fornecedores_por_pauta.items():
     st.markdown(
         f"""
         <div style="
-            background-color:#0d4caa;
+            background-color:#D0D0D0;
             padding:6px;
             border-radius:5px;
             text-align:center;
