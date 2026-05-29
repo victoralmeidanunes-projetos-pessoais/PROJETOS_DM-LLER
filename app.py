@@ -144,8 +144,112 @@ html, body, [class*="css"] {
     gap: 0.25rem;
 }
 
+.excel-box {
+
+    background-color: white;
+
+    border-radius: 12px;
+
+    padding: 15px;
+
+    border: 1px solid #E5E5E5;
+
+    margin-top: 15px;
+
+    margin-bottom: 15px;
+}
+
 </style>
 """, unsafe_allow_html=True)
+
+# =========================================
+# FUNÇÃO LEITURA EXCEL
+# =========================================
+
+def ler_excel(caminho_excel):
+
+    try:
+
+        # ================================
+        # XLSB
+        # ================================
+
+        if caminho_excel.endswith(".xlsb"):
+
+            abas = pd.ExcelFile(
+                caminho_excel,
+                engine="pyxlsb"
+            ).sheet_names
+
+            aba_escolhida = abas[0]
+
+            for aba in abas:
+
+                if "geral" in aba.lower():
+
+                    aba_escolhida = aba
+                    break
+
+            df = pd.read_excel(
+                caminho_excel,
+                sheet_name=aba_escolhida,
+                engine="pyxlsb"
+            )
+
+        # ================================
+        # XLSX / XLSM
+        # ================================
+
+        else:
+
+            abas = pd.ExcelFile(
+                caminho_excel
+            ).sheet_names
+
+            aba_escolhida = abas[0]
+
+            for aba in abas:
+
+                if "geral" in aba.lower():
+
+                    aba_escolhida = aba
+                    break
+
+            df = pd.read_excel(
+                caminho_excel,
+                sheet_name=aba_escolhida
+            )
+
+        # ================================
+        # LIMPEZA
+        # ================================
+
+        df = df.dropna(
+            how="all"
+        )
+
+        df = df.dropna(
+            axis=1,
+            how="all"
+        )
+
+        # REMOVE COLUNAS "UNNAMED"
+
+        df = df.loc[
+            :,
+            ~df.columns.astype(str)
+            .str.contains("^Unnamed")
+        ]
+
+        # LIMITA LINHAS
+
+        df = df.head(25)
+
+        return df
+
+    except Exception as erro:
+
+        return erro
 
 # =========================================
 # LOGO
@@ -249,7 +353,7 @@ total_campanhas = sum(
 # CABEÇALHO
 # =========================================
 
-st.subheader("    ")
+st.subheader(" ")
 
 st.header(
     "CAMPANHAS ATIVAS"
@@ -260,74 +364,12 @@ st.caption(
 )
 
 # =========================================
-# FORNECEDORES POR PAUTA
+# RESUMO PAUTAS
 # =========================================
 
-fornecedores_por_pauta = {}
+for pauta_nome in sorted(contagem_pautas.keys()):
 
-if os.path.exists(PASTA_RAIZ):
-
-    for pauta_nome in sorted(os.listdir(PASTA_RAIZ)):
-
-        caminho_pauta = os.path.join(
-            PASTA_RAIZ,
-            pauta_nome
-        )
-
-        if not os.path.isdir(caminho_pauta):
-            continue
-
-        lista_fornecedores = []
-
-        for fornecedor_nome in sorted(
-            os.listdir(caminho_pauta)
-        ):
-
-            caminho_fornecedor = os.path.join(
-                caminho_pauta,
-                fornecedor_nome
-            )
-
-            if not os.path.isdir(caminho_fornecedor):
-                continue
-
-            arquivos_validos = [
-
-                arq for arq in os.listdir(
-                    caminho_fornecedor
-                )
-
-                if (
-                    os.path.splitext(arq)[1].lower()
-                    in EXTENSOES_IMAGEM + EXTENSOES_PDF
-                )
-
-                and not arq.startswith("~$")
-            ]
-
-            quantidade = len(arquivos_validos)
-
-            lista_fornecedores.append(
-                (
-                    fornecedor_nome,
-                    quantidade
-                )
-            )
-
-        fornecedores_por_pauta[
-            pauta_nome
-        ] = lista_fornecedores
-
-# =========================================
-# EXIBIR RESUMO
-# =========================================
-
-for pauta_nome, lista_fornecedores in fornecedores_por_pauta.items():
-
-    total_pauta = contagem_pautas.get(
-        pauta_nome,
-        0
-    )
+    total_pauta = contagem_pautas[pauta_nome]
 
     st.markdown(
         f"""
@@ -345,29 +387,6 @@ for pauta_nome, lista_fornecedores in fornecedores_por_pauta.items():
         """,
         unsafe_allow_html=True
     )
-
-    quantidade_colunas = 7
-
-    colunas = st.columns(
-        quantidade_colunas
-    )
-
-    for i, (
-        fornecedor_nome,
-        total
-    ) in enumerate(lista_fornecedores):
-
-        coluna = colunas[
-            i % quantidade_colunas
-        ]
-
-        with coluna:
-
-            st.info(
-                f"{fornecedor_nome}: {total}"
-            )
-
-    st.markdown("<br>", unsafe_allow_html=True)
 
 st.divider()
 
@@ -458,7 +477,7 @@ pesquisa = st.sidebar.text_input(
 # FEED
 # =========================================
 
-st.subheader("MECÂNICAS📃")
+st.subheader("MECÂNICAS 📃")
 
 st.divider()
 
@@ -529,7 +548,7 @@ for p in pastas_para_ler:
 
             with st.container():
 
-                st.markdown(f"### {f}")
+                st.markdown(f"## {f}")
 
                 st.caption(p)
 
@@ -568,8 +587,8 @@ for p in pastas_para_ler:
 
                         pdf_viewer(
                             caminho_arquivo,
-                            width="50%",
-                            height=900
+                            width="100%",
+                            height=850
                         )
 
                         with open(
@@ -581,8 +600,7 @@ for p in pastas_para_ler:
                                 label="📥 Baixar PDF",
                                 data=pdf_file,
                                 file_name=arquivo,
-                                mime="application/pdf",
-                                use_container_width=False
+                                mime="application/pdf"
                             )
 
                     except Exception as erro:
@@ -630,50 +648,53 @@ for p in pastas_para_ler:
 
                 if excel_encontrado:
 
+                    st.markdown("""
+                    <div class="excel-box">
+                    """, unsafe_allow_html=True)
+
                     st.markdown("### 📊 Acompanhamento")
 
-                    try:
+                    resultado = ler_excel(
+                        excel_encontrado
+                    )
 
-                        if excel_encontrado.endswith(".xlsb"):
-
-                            df = pd.read_excel(
-                                excel_encontrado,
-                                engine="pyxlsb"
-                            )
-
-                        else:
-
-                            df = pd.read_excel(
-                                excel_encontrado
-                            )
+                    if isinstance(resultado, pd.DataFrame):
 
                         st.dataframe(
-                            df.head(30),
+                            resultado,
                             use_container_width=True,
                             height=350
                         )
 
-                        with open(
-                            excel_encontrado,
-                            "rb"
-                        ) as excel_file:
+                        st.caption(
+                            f"{len(resultado)} linhas exibidas"
+                        )
 
-                            st.download_button(
-                                label="📥 Baixar Excel",
-                                data=excel_file,
-                                file_name=os.path.basename(
-                                    excel_encontrado
-                                ),
-                                mime="application/vnd.ms-excel"
-                            )
-
-                    except Exception as erro:
+                    else:
 
                         st.warning(
                             "Não foi possível carregar o Excel."
                         )
 
-                        st.write(erro)
+                        st.write(resultado)
+
+                    with open(
+                        excel_encontrado,
+                        "rb"
+                    ) as excel_file:
+
+                        st.download_button(
+                            label="📥 Baixar Excel",
+                            data=excel_file,
+                            file_name=os.path.basename(
+                                excel_encontrado
+                            ),
+                            mime="application/vnd.ms-excel"
+                        )
+
+                    st.markdown("""
+                    </div>
+                    """, unsafe_allow_html=True)
 
                 st.divider()
 
