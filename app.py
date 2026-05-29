@@ -1,6 +1,11 @@
+# =========================================
+# IMPORTS
+# =========================================
+
 import streamlit as st
 from PIL import Image
 from streamlit_pdf_viewer import pdf_viewer
+import pandas as pd
 import os
 
 # =========================================
@@ -33,6 +38,12 @@ EXTENSOES_PDF = [
     ".pdf"
 ]
 
+EXTENSOES_EXCEL = [
+    ".xlsx",
+    ".xlsb",
+    ".xlsm"
+]
+
 # =========================================
 # CSS
 # =========================================
@@ -40,19 +51,11 @@ EXTENSOES_PDF = [
 st.markdown("""
 <style>
 
-/* =====================================
-FUNDO GERAL
-===================================== */
-
 html, body, [class*="css"] {
 
     background-color: #f5f5f5;
     color: #131203;
 }
-
-/* =====================================
-CONTAINER PRINCIPAL
-===================================== */
 
 .block-container {
 
@@ -60,10 +63,6 @@ CONTAINER PRINCIPAL
     padding-left: 2rem;
     padding-right: 2rem;
 }
-
-/* =====================================
-SIDEBAR
-===================================== */
 
 [data-testid="stSidebar"] {
 
@@ -75,10 +74,6 @@ SIDEBAR
 
     border-right: 1px solid rgba(255,255,255,0.08);
 }
-
-/* =====================================
-LOGO
-===================================== */
 
 .logo-container {
 
@@ -93,10 +88,6 @@ LOGO
     backdrop-filter: blur(6px);
 }
 
-/* =====================================
-TEXTOS MENU
-===================================== */
-
 [data-testid="stSidebar"] label,
 [data-testid="stSidebar"] .stMarkdown,
 [data-testid="stSidebar"] p,
@@ -107,10 +98,6 @@ TEXTOS MENU
     font-weight: 500;
 }
 
-/* =====================================
-TÍTULO MENU
-===================================== */
-
 [data-testid="stSidebar"] h1 {
 
     color: white !important;
@@ -119,10 +106,6 @@ TÍTULO MENU
 
     font-weight: 700 !important;
 }
-
-/* =====================================
-SELECTBOX
-===================================== */
 
 .stSelectbox div[data-baseweb="select"] {
 
@@ -140,10 +123,6 @@ SELECTBOX
     font-weight: 500;
 }
 
-/* =====================================
-INPUT TEXTO
-===================================== */
-
 .stTextInput input {
 
     background-color: rgba(255,255,255,0.96) !important;
@@ -155,18 +134,10 @@ INPUT TEXTO
     border: none !important;
 }
 
-/* =====================================
-RESUMO
-===================================== */
-
 [data-testid="stAlert"] {
 
     border-radius: 12px;
 }
-
-/* =====================================
-FEED
-===================================== */
 
 [data-testid="stVerticalBlock"] {
 
@@ -240,8 +211,12 @@ if os.path.exists(PASTA_RAIZ):
 
                 arq for arq in os.listdir(caminho_fornecedor)
 
-                if os.path.splitext(arq)[1].lower()
-                in EXTENSOES_IMAGEM + EXTENSOES_PDF
+                if (
+                    os.path.splitext(arq)[1].lower()
+                    in EXTENSOES_IMAGEM + EXTENSOES_PDF
+                )
+
+                and not arq.startswith("~$")
             ]
 
             quantidade = len(arquivos_validos)
@@ -285,11 +260,6 @@ st.caption(
 )
 
 # =========================================
-# RESUMO
-# =========================================
-
-
-# =========================================
 # FORNECEDORES POR PAUTA
 # =========================================
 
@@ -327,8 +297,12 @@ if os.path.exists(PASTA_RAIZ):
                     caminho_fornecedor
                 )
 
-                if os.path.splitext(arq)[1].lower()
-                in EXTENSOES_IMAGEM + EXTENSOES_PDF
+                if (
+                    os.path.splitext(arq)[1].lower()
+                    in EXTENSOES_IMAGEM + EXTENSOES_PDF
+                )
+
+                and not arq.startswith("~$")
             ]
 
             quantidade = len(arquivos_validos)
@@ -523,6 +497,9 @@ for p in pastas_para_ler:
 
         for arquivo in arquivos:
 
+            if arquivo.startswith("~$"):
+                continue
+
             caminho_arquivo = os.path.join(
                 caminho_fornecedor,
                 arquivo
@@ -531,6 +508,10 @@ for p in pastas_para_ler:
             extensao = os.path.splitext(
                 arquivo
             )[1].lower()
+
+            nome_sem_extensao = os.path.splitext(
+                arquivo
+            )[0]
 
             if (
                 extensao not in EXTENSOES_IMAGEM
@@ -552,6 +533,10 @@ for p in pastas_para_ler:
 
                 st.caption(p)
 
+                # =====================================
+                # IMAGEM
+                # =====================================
+
                 if extensao in EXTENSOES_IMAGEM:
 
                     try:
@@ -572,6 +557,10 @@ for p in pastas_para_ler:
                         )
 
                         st.write(erro)
+
+                # =====================================
+                # PDF
+                # =====================================
 
                 elif extensao in EXTENSOES_PDF:
 
@@ -600,6 +589,88 @@ for p in pastas_para_ler:
 
                         st.error(
                             "Erro ao abrir PDF"
+                        )
+
+                        st.write(erro)
+
+                # =====================================
+                # BUSCAR EXCEL RELACIONADO
+                # =====================================
+
+                excel_encontrado = None
+
+                for arq_excel in os.listdir(caminho_fornecedor):
+
+                    if arq_excel.startswith("~$"):
+                        continue
+
+                    nome_excel = os.path.splitext(
+                        arq_excel
+                    )[0]
+
+                    extensao_excel = os.path.splitext(
+                        arq_excel
+                    )[1].lower()
+
+                    if extensao_excel not in EXTENSOES_EXCEL:
+                        continue
+
+                    if nome_excel == nome_sem_extensao:
+
+                        excel_encontrado = os.path.join(
+                            caminho_fornecedor,
+                            arq_excel
+                        )
+
+                        break
+
+                # =====================================
+                # EXIBIR EXCEL
+                # =====================================
+
+                if excel_encontrado:
+
+                    st.markdown("### 📊 Acompanhamento")
+
+                    try:
+
+                        if excel_encontrado.endswith(".xlsb"):
+
+                            df = pd.read_excel(
+                                excel_encontrado,
+                                engine="pyxlsb"
+                            )
+
+                        else:
+
+                            df = pd.read_excel(
+                                excel_encontrado
+                            )
+
+                        st.dataframe(
+                            df.head(30),
+                            use_container_width=True,
+                            height=350
+                        )
+
+                        with open(
+                            excel_encontrado,
+                            "rb"
+                        ) as excel_file:
+
+                            st.download_button(
+                                label="📥 Baixar Excel",
+                                data=excel_file,
+                                file_name=os.path.basename(
+                                    excel_encontrado
+                                ),
+                                mime="application/vnd.ms-excel"
+                            )
+
+                    except Exception as erro:
+
+                        st.warning(
+                            "Não foi possível carregar o Excel."
                         )
 
                         st.write(erro)
