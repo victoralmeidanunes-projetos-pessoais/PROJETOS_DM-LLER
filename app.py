@@ -24,7 +24,7 @@ EXT_PDF = [".pdf"]
 EXT_EXCEL = [".xlsx", ".xlsb", ".xlsm"]
 
 # =========================================
-# CSS (mantido)
+# CSS (MANTIDO)
 # =========================================
 
 st.markdown("""
@@ -79,48 +79,49 @@ def ler_excel(caminho):
         return e
 
 # =========================================
-# CONTADOR (SOMENTE PDF - CORRETO)
+# CONTADORES (PDF)
 # =========================================
 
 contagem_pautas = {}
 contagem_fornecedores = {}
 
-for pauta in os.listdir(PASTA_RAIZ):
+if os.path.exists(PASTA_RAIZ):
 
-    caminho_pauta = os.path.join(PASTA_RAIZ, pauta)
+    for pauta in os.listdir(PASTA_RAIZ):
 
-    if not os.path.isdir(caminho_pauta):
-        continue
+        caminho_pauta = os.path.join(PASTA_RAIZ, pauta)
 
-    total_pdf_pauta = 0
-
-    fornecedores_tmp = {}
-
-    for f in os.listdir(caminho_pauta):
-
-        caminho_f = os.path.join(caminho_pauta, f)
-
-        if not os.path.isdir(caminho_f):
+        if not os.path.isdir(caminho_pauta):
             continue
 
-        total_pdf_forn = 0
+        total_pdf = 0
+        fornecedores_tmp = {}
 
-        for arq in os.listdir(caminho_f):
+        for f in os.listdir(caminho_pauta):
 
-            if arq.startswith("~$"):
+            caminho_f = os.path.join(caminho_pauta, f)
+
+            if not os.path.isdir(caminho_f):
                 continue
 
-            if arq.endswith(".pdf"):
-                total_pdf_pauta += 1
-                total_pdf_forn += 1
+            total_pdf_forn = 0
 
-        fornecedores_tmp[f] = total_pdf_forn
+            for arq in os.listdir(caminho_f):
 
-    contagem_pautas[pauta] = total_pdf_pauta
-    contagem_fornecedores[pauta] = fornecedores_tmp
+                if arq.startswith("~$"):
+                    continue
+
+                if arq.endswith(".pdf"):
+                    total_pdf += 1
+                    total_pdf_forn += 1
+
+            fornecedores_tmp[f] = total_pdf_forn
+
+        contagem_pautas[pauta] = total_pdf
+        contagem_fornecedores[pauta] = fornecedores_tmp
 
 # =========================================
-# MENU SUPERIOR (RESTAURADO)
+# RESUMO (RESTAURADO)
 # =========================================
 
 st.header("CAMPANHAS ATIVAS")
@@ -175,7 +176,7 @@ tab1, tab2 = st.tabs(["📄 Mecânicas", "🖼 Imagens & Excel"])
 contador = 0
 
 # =========================================
-# TAB 1 - PDF (SEM DUPLICAÇÃO)
+# TAB 1 - PDF
 # =========================================
 
 with tab1:
@@ -217,10 +218,12 @@ with tab1:
                 st.divider()
 
 # =========================================
-# TAB 2 - IMAGENS + EXCEL + PREVIEW
+# TAB 2 - IMAGENS + EXCEL (SEM DUPLICAR)
 # =========================================
 
 with tab2:
+
+    imagens_exibidas_global = set()
 
     for p in lista_pautas:
 
@@ -233,8 +236,6 @@ with tab2:
 
             arquivos = os.listdir(pasta)
 
-            imagens_exibidas = set()
-
             for arq in arquivos:
 
                 if arq.startswith("~$"):
@@ -245,23 +246,24 @@ with tab2:
                 if ext not in EXT_IMAGEM:
                     continue
 
-                if arq in imagens_exibidas:
+                caminho_img = os.path.join(pasta, arq)
+
+                # 🔥 BLOQUEIO DE DUPLICIDADE GLOBAL
+                if caminho_img in imagens_exibidas_global:
                     continue
 
-                imagens_exibidas.add(arq)
+                imagens_exibidas_global.add(caminho_img)
 
-                caminho = os.path.join(pasta, arq)
+                nome_base = os.path.splitext(arq)[0]
 
                 st.markdown(f"## {f}")
                 st.caption(p)
 
-                st.image(Image.open(caminho), use_container_width=True)
+                st.image(Image.open(caminho_img), use_container_width=True)
 
-                # =================================
+                # =========================
                 # EXCEL RELACIONADO
-                # =================================
-
-                nome_base = os.path.splitext(arq)[0]
+                # =========================
 
                 excel = None
 
@@ -286,9 +288,9 @@ with tab2:
                             file_name=os.path.basename(excel)
                         )
 
-                # =================================
+                # =========================
                 # PREVIEW WATCHDOG
-                # =================================
+                # =========================
 
                 preview = None
 
