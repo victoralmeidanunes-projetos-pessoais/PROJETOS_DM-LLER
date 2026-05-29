@@ -1,0 +1,252 @@
+# pip install watchdog pywin32 pillow
+
+from watchdog.observers import Observer
+from watchdog.events import FileSystemEventHandler
+
+import pythoncom
+import shutil
+import subprocess
+import time
+import os
+
+import win32com.client as win32
+from PIL import ImageGrab
+
+# ========= CONFIGURAÇÃO =========
+
+ARQUIVOS = [
+    {
+        "origem": r"B:\Victor\PAUTA D\FORNECEDORES PAUTA D\MARCAS PRÓPRIAS\ABERTAS\KIPIPOKA\INCENTIVO KI-PIPOKA JUNINA.xlsx",
+
+        "destino": r"C:\Users\victor.n\PROJETO\MECÂNICAS\PAUTA D\KIPIPOKA\INCENTIVO KI-PIPOKA JUNINA.xlsx"
+    }
+]
+
+# CAMINHO DO .BAT
+BAT_GITHUB = r"C:\Users\victor.n\PROJETO\att.bat"
+
+# =====================================
+
+MAPA = {
+    os.path.abspath(a["origem"]).lower(): a["destino"]
+    for a in ARQUIVOS
+}
+
+# =====================================
+# GERAR PREVIEW EXCEL
+# =====================================
+
+def gerar_preview_excel(caminho_excel):
+    pythoncom.CoInitialize()
+
+    try:
+
+        print("\nGerando preview Excel...")
+
+        excel = win32.Dispatch("Excel.Application")
+
+        excel.Visible = False
+        excel.DisplayAlerts = False
+
+        wb = excel.Workbooks.Open(caminho_excel)
+
+        aba = None
+
+        # PROCURA ABA GERAL
+        for sheet in wb.Worksheets:
+
+            if "GERAL" in sheet.Name.upper():
+
+                aba = sheet
+                break
+
+        # SE NÃO ENCONTRAR
+        if aba is None:
+
+            aba = wb.Worksheets(1)
+
+        aba.Activate()
+
+        # ÁREA UTILIZADA
+        area = aba.UsedRange
+
+        # COPIA COMO IMAGEM
+        area.CopyPicture(Format=2)
+
+        time.sleep(5)
+
+        imagem = ImageGrab.grabclipboard()
+
+        if imagem:
+
+            caminho_png = os.path.splitext(
+                caminho_excel
+            )[0] + "_preview.png"
+
+            imagem.save(caminho_png)
+
+            print("\nPreview gerado:")
+            print(caminho_png)
+
+        else:
+
+            print("\nNão foi possível gerar preview.")
+
+        wb.Close(False)
+
+        excel.Quit()
+
+    except Exception as e:
+
+        print(f"\nERRO PREVIEW: {e}")
+
+# =====================================
+# MONITOR
+# =====================================
+
+class MonitorExcel(FileSystemEventHandler):
+
+    ultimo_processamento = {}
+
+    def processar(self, caminho):
+
+        caminho = os.path.abspath(caminho).lower()
+
+        print(f"\nEvento detectado: {caminho}")
+
+        # IGNORA TEMPORÁRIOS
+        nome_arquivo = os.path.basename(caminho)
+
+        if nome_arquivo.startswith("~$"):
+            return
+
+        if caminho not in MAPA:
+            return
+
+        # EVITA DUPLICIDADE
+        modificado = time.time()
+
+        ultimo = self.ultimo_processamento.get(caminho)
+
+        if ultimo == modificado:
+            return
+
+        self.ultimo_processamento[caminho] = modificado
+
+        destino = MAPA[caminho]
+
+        try:
+
+            print("\nAguardando Excel liberar arquivo...")
+
+            time.sleep(3)
+
+            os.makedirs(
+                os.path.dirname(destino),
+                exist_ok=True
+            )
+
+            # =================================
+            # COPIA EXCEL
+            # =================================
+
+            shutil.copy2(
+                caminho,
+                destino
+            )
+
+            print(f"\nCopiado com sucesso:")
+            print(caminho)
+            print("->")
+            print(destino)
+
+            # =================================
+            # GERA PREVIEW
+            # =================================
+
+            gerar_preview_excel(destino)
+
+            # =================================
+            # EXECUTA GITHUB
+            # =================================
+
+            print("\nExecutando atualização GitHub...")
+
+            subprocess.run(
+                BAT_GITHUB,
+                shell=True
+            )
+
+            print("\nGitHub atualizado com sucesso.\n")
+
+        except Exception as e:
+
+            print(f"\nERRO: {e}")
+
+    # =====================================
+    # EVENTOS
+    # =====================================
+
+    def on_any_event(self, event):
+
+        if event.is_directory:
+            return
+
+        caminho = event.src_path.lower()
+
+        # ACEITA EXCEL
+        if not caminho.endswith((
+            ".xlsx",
+            ".xlsb",
+            ".xlsm"
+        )):
+            return
+
+        self.processar(caminho)
+
+# =====================================
+# INICIAR MONITORAMENTO
+# =====================================
+
+observer = Observer()
+
+evento = MonitorExcel()
+
+pastas_monitoradas = set(
+
+    os.path.dirname(
+        os.path.abspath(a["origem"])
+    )
+
+    for a in ARQUIVOS
+)
+
+for pasta in pastas_monitoradas:
+
+    print(f"Monitorando pasta:\n{pasta}\n")
+
+    observer.schedule(
+        evento,
+        pasta,
+        recursive=False
+    )
+
+observer.start()
+
+print("Monitoramento iniciado...\n")
+
+# =====================================
+# LOOP
+# =====================================
+
+try:
+
+    while True:
+
+        time.sleep(1)
+
+except KeyboardInterrupt:
+
+    observer.stop()
+
+observer.join()
