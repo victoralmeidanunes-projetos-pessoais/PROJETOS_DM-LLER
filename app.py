@@ -5,7 +5,6 @@
 import streamlit as st
 from PIL import Image
 from streamlit_pdf_viewer import pdf_viewer
-import pandas as pd
 import os
 
 # =========================================
@@ -36,17 +35,11 @@ html, body, [class*="css"] {
 }
 
 .block-container {
-    padding-top: 1rem;
-    padding-left: 2rem;
-    padding-right: 2rem;
+    padding: 1rem 2rem;
 }
 
 [data-testid="stSidebar"] {
-    background: linear-gradient(
-        180deg,
-        #0d4caa 0%,
-        #0a3d86 100%
-    );
+    background: linear-gradient(180deg,#0d4caa,#0a3d86);
 }
 
 .logo-container {
@@ -59,116 +52,15 @@ html, body, [class*="css"] {
 [data-testid="stSidebar"] .stMarkdown,
 [data-testid="stSidebar"] p,
 [data-testid="stSidebar"] span {
-
-    color: #ffffff !important;
-    font-weight: 500;
+    color: white !important;
 }
 
 [data-testid="stSidebar"] h1 {
-
     color: white !important;
-    font-size: 26px !important;
-    font-weight: 700 !important;
-}
-
-.stSelectbox div[data-baseweb="select"] {
-
-    background-color: rgba(255,255,255,0.96);
-    border-radius: 12px;
-    border: none;
-}
-
-.stTextInput input {
-
-    background-color: rgba(255,255,255,0.96) !important;
-    color: #131203 !important;
-    border-radius: 12px !important;
-    border: none !important;
-}
-
-[data-testid="stAlert"] {
-    border-radius: 12px;
-}
-
-[data-testid="stVerticalBlock"] {
-    gap: 0.25rem;
-}
-
-.excel-box {
-    background: white;
-    padding: 15px;
-    border-radius: 12px;
-    border: 1px solid #E5E5E5;
-    margin-top: 10px;
 }
 
 </style>
 """, unsafe_allow_html=True)
-
-# =========================================
-# FUNÇÃO LEITURA EXCEL
-# =========================================
-
-def ler_excel(caminho):
-
-    try:
-
-        if caminho.endswith(".xlsb"):
-
-            abas = pd.ExcelFile(
-                caminho,
-                engine="pyxlsb"
-            ).sheet_names
-
-            aba = abas[0]
-
-            for a in abas:
-
-                if "geral" in a.lower():
-
-                    aba = a
-                    break
-
-            df = pd.read_excel(
-                caminho,
-                sheet_name=aba,
-                engine="pyxlsb"
-            )
-
-        else:
-
-            abas = pd.ExcelFile(
-                caminho
-            ).sheet_names
-
-            aba = abas[0]
-
-            for a in abas:
-
-                if "geral" in a.lower():
-
-                    aba = a
-                    break
-
-            df = pd.read_excel(
-                caminho,
-                sheet_name=aba
-            )
-
-        df = df.dropna(how="all")
-        df = df.dropna(axis=1, how="all")
-
-        df = df.loc[
-            :,
-            ~df.columns.astype(str)
-            .str.contains("^Unnamed")
-        ]
-
-        return df.head(20)
-
-    except Exception as erro:
-
-        return erro
 
 # =========================================
 # LOGO
@@ -204,27 +96,25 @@ with st.sidebar:
 # =========================================
 
 contagem_pautas = {}
-contagem_fornecedores = {}
+fornecedores_por_pauta = {}
 
 if os.path.exists(PASTA_RAIZ):
 
-    for pauta_nome in os.listdir(PASTA_RAIZ):
+    for pauta in sorted(os.listdir(PASTA_RAIZ)):
 
-        caminho_pauta = os.path.join(
-            PASTA_RAIZ,
-            pauta_nome
-        )
+        caminho_pauta = os.path.join(PASTA_RAIZ, pauta)
 
         if not os.path.isdir(caminho_pauta):
             continue
 
-        total_pauta = 0
+        total_pdf = 0
+        lista_fornecedores = []
 
-        for fornecedor_nome in os.listdir(caminho_pauta):
+        for fornecedor in sorted(os.listdir(caminho_pauta)):
 
             caminho_fornecedor = os.path.join(
                 caminho_pauta,
-                fornecedor_nome
+                fornecedor
             )
 
             if not os.path.isdir(caminho_fornecedor):
@@ -234,168 +124,75 @@ if os.path.exists(PASTA_RAIZ):
 
             for arq in os.listdir(caminho_fornecedor):
 
-                if arq.lower().endswith(".pdf"):
+                if arq.startswith("~$"):
+                    continue
 
+                if arq.lower().endswith(".pdf"):
                     quantidade += 1
 
-            total_pauta += quantidade
+            total_pdf += quantidade
 
-            if fornecedor_nome not in contagem_fornecedores:
+            lista_fornecedores.append(
+                (fornecedor, quantidade)
+            )
 
-                contagem_fornecedores[
-                    fornecedor_nome
-                ] = 0
+        contagem_pautas[pauta] = total_pdf
 
-            contagem_fornecedores[
-                fornecedor_nome
-            ] += quantidade
-
-        contagem_pautas[
-            pauta_nome
-        ] = total_pauta
-
-# =========================================
-# TOTAL GERAL
-# =========================================
-
-total_campanhas = sum(
-    contagem_pautas.values()
-)
+        fornecedores_por_pauta[pauta] = (
+            lista_fornecedores
+        )
 
 # =========================================
 # CABEÇALHO
 # =========================================
 
-st.subheader(" ")
-
-st.header(
-    "CAMPANHAS ATIVAS"
-)
+st.header("CAMPANHAS ATIVAS")
 
 st.caption(
-    f"{total_campanhas} campanhas ativas cadastradas"
+    f"{sum(contagem_pautas.values())} campanhas ativas"
 )
 
 # =========================================
-# FORNECEDORES POR PAUTA
+# RESUMO
 # =========================================
 
-fornecedores_por_pauta = {}
+for pauta, lista in fornecedores_por_pauta.items():
 
-if os.path.exists(PASTA_RAIZ):
+    total = contagem_pautas[pauta]
 
-    for pauta_nome in sorted(os.listdir(PASTA_RAIZ)):
+    st.markdown(f"""
+    <div style="
+        background:#A8B9DC;
+        padding:6px;
+        border-radius:5px;
+        text-align:center;
+        color:white;
+        font-weight:700;
+        margin-bottom:8px;">
+        📁 {pauta} | {total} campanhas
+    </div>
+    """, unsafe_allow_html=True)
 
-        caminho_pauta = os.path.join(
-            PASTA_RAIZ,
-            pauta_nome
-        )
+    cols = st.columns(7)
 
-        if not os.path.isdir(caminho_pauta):
-            continue
+    for i, (fornecedor, qtd) in enumerate(lista):
 
-        lista_fornecedores = []
+        with cols[i % 7]:
 
-        for fornecedor_nome in sorted(
-            os.listdir(caminho_pauta)
-        ):
-
-            caminho_fornecedor = os.path.join(
-                caminho_pauta,
-                fornecedor_nome
-            )
-
-            if not os.path.isdir(caminho_fornecedor):
-                continue
-
-            quantidade = 0
-
-            for arq in os.listdir(caminho_fornecedor):
-
-                if arq.lower().endswith(".pdf"):
-
-                    quantidade += 1
-
-            lista_fornecedores.append(
-                (
-                    fornecedor_nome,
-                    quantidade
-                )
-            )
-
-        fornecedores_por_pauta[
-            pauta_nome
-        ] = lista_fornecedores
-
-# =========================================
-# EXIBIR RESUMO
-# =========================================
-
-for pauta_nome, lista_fornecedores in fornecedores_por_pauta.items():
-
-    total_pauta = contagem_pautas.get(
-        pauta_nome,
-        0
-    )
-
-    st.markdown(
-        f"""
-        <div style="
-            background-color:#A8B9DC;
-            padding:6px;
-            border-radius:5px;
-            text-align:center;
-            color:white;
-            font-weight:700;
-            margin-bottom:8px;
-        ">
-            📁 {pauta_nome} | {total_pauta} campanhas
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-    colunas = st.columns(7)
-
-    for i, (
-        fornecedor_nome,
-        total
-    ) in enumerate(lista_fornecedores):
-
-        with colunas[i % 7]:
-
-            st.info(
-                f"{fornecedor_nome}: {total}"
-            )
+            st.info(f"{fornecedor}: {qtd}")
 
     st.markdown("<br>", unsafe_allow_html=True)
 
 st.divider()
 
 # =========================================
-# LISTAR PAUTAS
-# =========================================
-
-pautas = []
-
-if os.path.exists(PASTA_RAIZ):
-
-    for item in os.listdir(PASTA_RAIZ):
-
-        caminho = os.path.join(
-            PASTA_RAIZ,
-            item
-        )
-
-        if os.path.isdir(caminho):
-
-            pautas.append(item)
-
-pautas.sort()
-
-# =========================================
 # FILTROS
 # =========================================
+
+pautas = sorted([
+    p for p in os.listdir(PASTA_RAIZ)
+    if os.path.isdir(os.path.join(PASTA_RAIZ, p))
+])
 
 pauta_sel = st.sidebar.selectbox(
     "Pauta",
@@ -403,8 +200,7 @@ pauta_sel = st.sidebar.selectbox(
 )
 
 lista_pautas = (
-    pautas
-    if pauta_sel == "Todas"
+    pautas if pauta_sel == "Todas"
     else [pauta_sel]
 )
 
@@ -417,15 +213,18 @@ for p in lista_pautas:
         p
     )
 
-    if os.path.isdir(caminho_pauta):
+    for f in os.listdir(caminho_pauta):
 
-        for f in os.listdir(caminho_pauta):
+        caminho_f = os.path.join(
+            caminho_pauta,
+            f
+        )
+
+        if os.path.isdir(caminho_f):
 
             fornecedores.append(f)
 
-fornecedores = sorted(
-    list(set(fornecedores))
-)
+fornecedores = sorted(set(fornecedores))
 
 fornecedor_sel = st.sidebar.selectbox(
     "Fornecedor",
@@ -448,7 +247,7 @@ tab1, tab2 = st.tabs([
 contador = 0
 
 # =========================================
-# TAB PDF
+# TAB PDFs
 # =========================================
 
 with tab1:
@@ -465,7 +264,10 @@ with tab1:
 
         for f in os.listdir(caminho_pauta):
 
-            if fornecedor_sel != "Todos" and f != fornecedor_sel:
+            if (
+                fornecedor_sel != "Todos"
+                and f != fornecedor_sel
+            ):
                 continue
 
             pasta = os.path.join(
@@ -476,7 +278,10 @@ with tab1:
             if not os.path.isdir(pasta):
                 continue
 
-            arquivos = os.listdir(pasta)
+            arquivos = sorted(
+                os.listdir(pasta),
+                reverse=True
+            )
 
             for arq in arquivos:
 
@@ -486,10 +291,12 @@ with tab1:
                 if not arq.lower().endswith(".pdf"):
                     continue
 
-                if pesquisa:
-
-                    if pesquisa.lower() not in arq.lower():
-                        continue
+                if (
+                    pesquisa
+                    and pesquisa.lower()
+                    not in arq.lower()
+                ):
+                    continue
 
                 contador += 1
 
@@ -499,19 +306,15 @@ with tab1:
                 )
 
                 st.markdown(f"## {f}")
-
                 st.caption(p)
 
                 pdf_viewer(
                     caminho,
                     width="100%",
-                    height=850
+                    height=800
                 )
 
-                with open(
-                    caminho,
-                    "rb"
-                ) as file:
+                with open(caminho, "rb") as file:
 
                     st.download_button(
                         "📥 Baixar PDF",
@@ -527,8 +330,6 @@ with tab1:
 
 with tab2:
 
-    previews_exibidos = set()
-
     for p in lista_pautas:
 
         caminho_pauta = os.path.join(
@@ -541,7 +342,10 @@ with tab2:
 
         for f in os.listdir(caminho_pauta):
 
-            if fornecedor_sel != "Todos" and f != fornecedor_sel:
+            if (
+                fornecedor_sel != "Todos"
+                and f != fornecedor_sel
+            ):
                 continue
 
             pasta = os.path.join(
@@ -552,157 +356,100 @@ with tab2:
             if not os.path.isdir(pasta):
                 continue
 
-            arquivos = os.listdir(pasta)
+            arquivos = sorted(
+                os.listdir(pasta),
+                reverse=True
+            )
+
+            previews_exibidos = set()
 
             for arq in arquivos:
 
                 if arq.startswith("~$"):
                     continue
 
-                # MOSTRA SOMENTE PREVIEW
-                if "_preview" not in arq.lower():
+                nome_lower = arq.lower()
+
+                # SOMENTE PREVIEW
+                if "_preview" not in nome_lower:
                     continue
 
-                ext = os.path.splitext(
-                    arq
-                )[1].lower()
-
-                if ext not in EXT_IMAGEM:
+                if not nome_lower.endswith(".png"):
                     continue
 
-                # REMOVE DUPLICIDADE
-                if arq.lower() in previews_exibidos:
-                    continue
-
-                previews_exibidos.add(
-                    arq.lower()
+                nome_base = nome_lower.replace(
+                    "_preview.png",
+                    ""
                 )
 
-                if pesquisa:
+                if nome_base in previews_exibidos:
+                    continue
 
-                    if pesquisa.lower() not in arq.lower():
-                        continue
+                previews_exibidos.add(nome_base)
 
-                caminho = os.path.join(
+                caminho_preview = os.path.join(
                     pasta,
                     arq
                 )
 
                 st.markdown(f"## {f}")
-
                 st.caption(p)
 
                 st.image(
-                    caminho,
+                    caminho_preview,
                     use_container_width=True
                 )
 
                 # =====================================
-                # BUSCAR EXCEL RELACIONADO
+                # EXCEL RELACIONADO
                 # =====================================
 
-                nome_base = arq.lower()
+                excel_relacionado = None
 
-                nome_base = nome_base.replace(
-                    "_preview.png",
-                    ""
-                )
+                for arquivo_excel in arquivos:
 
-                nome_base = nome_base.replace(
-                    "_preview.jpg",
-                    ""
-                )
-
-                nome_base = nome_base.replace(
-                    "_preview.jpeg",
-                    ""
-                )
-
-                nome_base = nome_base.replace(
-                    "_preview.webp",
-                    ""
-                )
-
-                excel_encontrado = None
-
-                for arq_excel in arquivos:
-
-                    if arq_excel.startswith("~$"):
+                    if arquivo_excel.startswith("~$"):
                         continue
 
+                    nome_excel = os.path.splitext(
+                        arquivo_excel
+                    )[0].lower()
+
                     ext_excel = os.path.splitext(
-                        arq_excel
+                        arquivo_excel
                     )[1].lower()
 
                     if ext_excel not in EXT_EXCEL:
                         continue
 
-                    nome_excel = os.path.splitext(
-                        arq_excel
-                    )[0].lower()
-
                     if nome_excel == nome_base:
 
-                        excel_encontrado = os.path.join(
+                        excel_relacionado = os.path.join(
                             pasta,
-                            arq_excel
+                            arquivo_excel
                         )
 
                         break
 
                 # =====================================
-                # EXCEL
+                # BOTÃO DOWNLOAD EXCEL
                 # =====================================
 
-                if excel_encontrado:
+                if excel_relacionado:
 
-                    st.markdown("""
-                    <div class="excel-box">
-                    """, unsafe_allow_html=True)
-
-                    st.markdown("### 📊 Excel")
-
-                    resultado = ler_excel(
-                        excel_encontrado
-                    )
-
-                    if isinstance(
-                        resultado,
-                        pd.DataFrame
-                    ):
-
-                        st.dataframe(
-                            resultado,
-                            use_container_width=True,
-                            height=350
-                        )
-
-                    else:
-
-                        st.warning(
-                            "Não foi possível carregar o Excel."
-                        )
-
-                        st.write(resultado)
-
-                    # DOWNLOAD EXCEL
                     with open(
-                        excel_encontrado,
+                        excel_relacionado,
                         "rb"
-                    ) as fexcel:
+                    ) as file_excel:
 
                         st.download_button(
                             label="📥 Baixar Excel",
-                            data=fexcel,
+                            data=file_excel,
                             file_name=os.path.basename(
-                                excel_encontrado
+                                excel_relacionado
                             ),
                             mime="application/vnd.ms-excel"
                         )
-
-                    st.markdown("""
-                    </div>
-                    """, unsafe_allow_html=True)
 
                 st.divider()
 
