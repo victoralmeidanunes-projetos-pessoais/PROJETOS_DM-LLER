@@ -571,10 +571,12 @@ with tab2:
                     continue
 
                 # REMOVE DUPLICIDADE
-                if arq in previews_exibidos:
+                if arq.lower() in previews_exibidos:
                     continue
 
-                previews_exibidos.add(arq)
+                previews_exibidos.add(
+                    arq.lower()
+                )
 
                 if pesquisa:
 
@@ -599,32 +601,51 @@ with tab2:
                 # BUSCAR EXCEL RELACIONADO
                 # =====================================
 
-                nome_base = arq.lower() \
-                    .replace("_preview", "")
+                nome_base = arq.lower()
 
-                excel = None
+                nome_base = nome_base.replace(
+                    "_preview.png",
+                    ""
+                )
 
-                for e in arquivos:
+                nome_base = nome_base.replace(
+                    "_preview.jpg",
+                    ""
+                )
 
-                    if e.startswith("~$"):
+                nome_base = nome_base.replace(
+                    "_preview.jpeg",
+                    ""
+                )
+
+                nome_base = nome_base.replace(
+                    "_preview.webp",
+                    ""
+                )
+
+                excel_encontrado = None
+
+                for arq_excel in arquivos:
+
+                    if arq_excel.startswith("~$"):
                         continue
 
                     ext_excel = os.path.splitext(
-                        e
+                        arq_excel
                     )[1].lower()
 
                     if ext_excel not in EXT_EXCEL:
                         continue
 
                     nome_excel = os.path.splitext(
-                        e
+                        arq_excel
                     )[0].lower()
 
                     if nome_excel == nome_base:
 
-                        excel = os.path.join(
+                        excel_encontrado = os.path.join(
                             pasta,
-                            e
+                            arq_excel
                         )
 
                         break
@@ -633,7 +654,7 @@ with tab2:
                 # EXCEL
                 # =====================================
 
-                if excel:
+                if excel_encontrado:
 
                     st.markdown("""
                     <div class="excel-box">
@@ -642,7 +663,7 @@ with tab2:
                     st.markdown("### 📊 Excel")
 
                     resultado = ler_excel(
-                        excel
+                        excel_encontrado
                     )
 
                     if isinstance(
@@ -656,15 +677,27 @@ with tab2:
                             height=350
                         )
 
+                    else:
+
+                        st.warning(
+                            "Não foi possível carregar o Excel."
+                        )
+
+                        st.write(resultado)
+
+                    # DOWNLOAD EXCEL
                     with open(
-                        excel,
+                        excel_encontrado,
                         "rb"
                     ) as fexcel:
 
                         st.download_button(
-                            "📥 Baixar Excel",
-                            fexcel,
-                            file_name=os.path.basename(excel)
+                            label="📥 Baixar Excel",
+                            data=fexcel,
+                            file_name=os.path.basename(
+                                excel_encontrado
+                            ),
+                            mime="application/vnd.ms-excel"
                         )
 
                     st.markdown("""
