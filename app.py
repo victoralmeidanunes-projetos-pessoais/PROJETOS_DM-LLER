@@ -145,7 +145,10 @@ if os.path.exists(PASTA_RAIZ):
 # =========================================
 # CABEÇALHO
 # =========================================
-st.divider()
+st.feedback()
+st.__loader__
+
+
 st.header("CAMPANHAS ATIVAS")
 
 st.caption(
