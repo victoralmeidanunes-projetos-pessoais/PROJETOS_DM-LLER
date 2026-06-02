@@ -14,12 +14,76 @@ from PIL import ImageGrab
 
 # ========= CONFIGURAÇÃO =========
 
-ARQUIVOS = [
+ARQUIVOS = [ #KI-PIPOKA
     {
         "origem": r"B:\Victor\PAUTA D\FORNECEDORES PAUTA D\MARCAS PRÓPRIAS\ABERTAS\KIPIPOKA\INCENTIVO KI-PIPOKA JUNINA.xlsx",
 
         "destino": r"C:\Users\victor.n\PROJETO\MECÂNICAS\PAUTA D\KIPIPOKA\INCENTIVO KI-PIPOKA JUNINA.xlsx"
-    }
+    },
+
+    #CORY
+
+    {
+        "origem": r"B:\Anne\7º Acompanhamentos\Cory\CAMPANHA DE INCENTIVO CORY - TRIMESTRAL.xlsx",
+
+        "destino": r"C:\Users\victor.n\PROJETO\MECÂNICAS\PAUTA M\CORY\CAMPANHA DE INCENTIVO CORY - TRIMESTRAL.xlsx"
+    },
+
+    #SH
+    
+    {
+        "origem": r"B:\Victor\PAUTA M\SANTA HELENA\CAMPANHA SH\CAMPANHA INCENTIVO SH - JUNINA 2026.xlsx",
+
+        "destino": r"C:\Users\victor.n\PROJETO\MECÂNICAS\PAUTA M\SANTA HELENA\CAMPANHA INCENTIVO SH - JUNINA 2026.xlsx"
+    },
+
+    #YPÊ
+    
+    {
+        "origem": r"B:\Victor\PAUTA M\YPÊ\ABERTAS\Campanha de Incentivo Ypê - Categorias Foco 05'06.xlsb",
+
+        "destino": r"C:\Users\victor.n\PROJETO\MECÂNICAS\PAUTA M\YPÊ\Campanha de Incentivo Ypê - Categorias Foco 05'06.xlsb"
+    },
+
+    #FERRERO
+    
+    {
+        "origem": r"B:\Victor\PAUTA D\Ferrero\FERRERO\1. ACOMPANHAMENTOS & CAMPANHAS\2026\Ano Fiscal 25'26\05.MAIO - 2026\Campanhas\Campanha de incentivo - Equipe Ferrero  25'26.xlsx",
+
+        "destino": r"C:\Users\victor.n\PROJETO\MECÂNICAS\PAUTA D\FERRERO\INCENTIVO EQUIPE FERRERO - SS 3'2026.xlsx"
+    },
+
+    #JHONSON
+    
+    #TOP CONTAS
+    {
+        "origem": r"B:\Nicolas\Acompanhamentos\JOHNSON\2025.26\Q4\Campanha Johnson - Top Contas Q4 FY26.xlsx",
+
+        "destino": r"C:\Users\victor.n\PROJETO\MECÂNICAS\PAUTA M\JHONSON\Campanha Johnson - Top Contas Q4 FY26.xlsx"
+    },
+
+    #MERCHANDISING
+
+    {
+        "origem": r"B:\Nicolas\Acompanhamentos\JOHNSON\2025.26\Q4\Campanha Johnson - Merchandising - FY26.xlsx",
+
+        "destino": r"C:\Users\victor.n\PROJETO\MECÂNICAS\PAUTA M\JHONSON\Campanha Johnson - Merchandising - FY26.xlsx"
+    },
+
+
+    #LOJA PERFEITA
+
+    {
+        "origem": r"B:\Nicolas\Acompanhamentos\JOHNSON\2025.26\Q4\Campanha Johnson - Loja Perfeita 360 Q4 FY26.xlsx",
+
+        "destino": r"C:\Users\victor.n\PROJETO\MECÂNICAS\PAUTA M\JHONSON\Campanha Johnson - Loja Perfeita 360 Q4 FY26.xlsx"
+    },
+
+
+
+
+
+    
 ]
 
 # CAMINHO DO .BAT
