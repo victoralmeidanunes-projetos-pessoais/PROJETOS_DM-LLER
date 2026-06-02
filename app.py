@@ -311,7 +311,8 @@ with tab1:
                 pdf_viewer(
                     caminho,
                     width="100%",
-                    height=800
+                    height=800,
+                    key=f"{p}_{f}_{arq}"
                 )
 
                 with open(caminho, "rb") as file:
@@ -361,10 +362,6 @@ with tab2:
                 reverse=True
             )
 
-            st.write(f"Pasta: {pasta}")
-
-            for a in arquivos:
-                st.write(a)
 
             previews_exibidos = set()
 
