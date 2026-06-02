@@ -361,6 +361,11 @@ with tab2:
                 reverse=True
             )
 
+            st.write(f"Pasta: {pasta}")
+
+            for a in arquivos:
+                st.write(a)
+
             previews_exibidos = set()
 
             for arq in arquivos:
