@@ -146,7 +146,7 @@ if os.path.exists(PASTA_RAIZ):
 # CABEÇALHO
 # =========================================
 st.feedback()
-st.__loader__
+st.user_info()
 
 
 st.header("CAMPANHAS ATIVAS")
