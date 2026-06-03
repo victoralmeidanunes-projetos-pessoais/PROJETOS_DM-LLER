@@ -13,8 +13,8 @@ import os
 
 st.set_page_config(
     page_title="Campanhas",
-    layout="wide",
-    page_icon=r"C:\Users\victor.n\PROJETO\sorriso_dmuller_logo2.png"
+    layout="wide", 
+    page_icon="📊"
 )
 
 PASTA_RAIZ = "MECÂNICAS"
