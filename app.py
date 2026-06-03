@@ -145,7 +145,8 @@ if os.path.exists(PASTA_RAIZ):
 # =========================================
 # CABEÇALHO
 # =========================================
-st.title("📊 CAMPANHAS ATIVAS")
+st.text(" ")
+
 st.header("CAMPANHAS ATIVAS")
 
 st.caption(
