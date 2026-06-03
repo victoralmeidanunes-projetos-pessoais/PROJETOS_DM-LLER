@@ -155,31 +155,31 @@ st.caption(
 # =========================================
 # RESUMO
 # =========================================
-
 for pauta, lista in fornecedores_por_pauta.items():
 
     total = contagem_pautas[pauta]
 
-    st.markdown(f"""
-    <div style="
-        background:#A8B9DC;
-        padding:2px;
-        border-radius:2px;
-        text-align:center;
-        color:white;
-        font-weight:700;
-        margin-bottom:8px;">
-        📁 {pauta} | {total} campanhas
-    </div>
-    """, unsafe_allow_html=True)
+    with st.expander(f"📁 {pauta} | {total} campanhas", expanded=False):
 
-    cols = st.columns(7)
+        st.markdown(f"""
+        <div style="
+            background:#A8B9DC;
+            padding:2px;
+            border-radius:2px;
+            text-align:center;
+            color:white;
+            font-weight:700;
+            margin-bottom:8px;">
+            📁 {pauta} | {total} campanhas
+        </div>
+        """, unsafe_allow_html=True)
 
-    for i, (fornecedor, qtd) in enumerate(lista):
+        cols = st.columns(7)
 
-        with cols[i % 7]:
+        for i, (fornecedor, qtd) in enumerate(lista):
 
-            st.info(f"{fornecedor}: {qtd}")
+            with cols[i % 7]:
+                st.info(f"{fornecedor}: {qtd}")
 
     st.markdown("<br>", unsafe_allow_html=True)
 
