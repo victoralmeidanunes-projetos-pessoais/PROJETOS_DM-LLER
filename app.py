@@ -170,7 +170,7 @@ for pauta, lista in fornecedores_por_pauta.items():
             border-radius:2px;
             text-align:center;
             color:white;
-            font-weight:700;
+            font-weight:500;
             margin-bottom:8px;">
             📁 {pauta} | {total} campanhas
         </div>
