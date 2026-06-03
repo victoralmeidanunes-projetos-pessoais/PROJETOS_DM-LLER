@@ -181,7 +181,7 @@ for pauta, lista in fornecedores_por_pauta.items():
             with cols[i % 7]:
                 st.info(f"{fornecedor}: {qtd}")
 
-    st.markdown("<br>", unsafe_allow_html=True)
+
 
 st.divider()
 
