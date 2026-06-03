@@ -242,8 +242,8 @@ pesquisa = st.sidebar.text_input(
 # =========================================
 
 tab1, tab2 = st.tabs([
-    "📄 Mecânicas",
-    "📊 ACOMPANHAMENTO"
+    "📄 MECÂNICAS",
+    "📊 ACOMPANHAMENTOS"
 ])
 
 contador = 0
