@@ -464,5 +464,5 @@ with tab2:
 st.sidebar.divider()
 
 st.sidebar.write(
-    f"CAMPANHAS (PDF): {contador}"
+    f"CAMPANHAS: {contador}"
 )
