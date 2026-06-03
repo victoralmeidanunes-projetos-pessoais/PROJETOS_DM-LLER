@@ -164,7 +164,7 @@ for pauta, lista in fornecedores_por_pauta.items():
     <div style="
         background:#A8B9DC;
         padding:2px;
-        border-radius:5px;
+        border-radius:2px;
         text-align:center;
         color:white;
         font-weight:700;
