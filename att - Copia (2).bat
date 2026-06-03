@@ -1,0 +1,13 @@
+
+cd /d "C:\Users\victor.n\PROJETO"
+
+echo ============================
+echo ENVIANDO ATUALIZACOES...
+echo ============================
+
+git add .
+
+git commit -m "%date% %time%"
+
+git push
+
