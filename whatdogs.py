@@ -49,7 +49,7 @@ ARQUIVOS = [ #KI-PIPOKA
     
     #EQUIPE FERRERO
     {
-        "origem": r"B:\Victor\PAUTA D\Ferrero\FERRERO\1. ACOMPANHAMENTOS & CAMPANHAS\2026\Ano Fiscal 25'26\05.MAIO - 2026\Campanhas\Campanha de incentivo - Equipe Ferrero  25'26.xlsx",
+        "origem": r"B:\Victor\PAUTA D\Ferrero\FERRERO\1. ACOMPANHAMENTOS & CAMPANHAS\2026\Ano Fiscal 25'26\CAMPANHAS\3ª SESSIONE\Campanha de incentivo - Equipe Ferrero  25'26.xlsx",
 
         "destino": r"C:\Users\victor.n\PROJETO\MECÂNICAS\PAUTA D\FERRERO\INCENTIVO EQUIPE FERRERO - SS 3'2026.xlsx"
     },
