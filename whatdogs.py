@@ -21,6 +21,13 @@ ARQUIVOS = [ #KI-PIPOKA
         "destino": r"C:\Users\victor.n\PROJETO\MECÂNICAS\PAUTA D\KIPIPOKA\INCENTIVO KI-PIPOKA JUNINA.xlsx"
     },
 
+    #BITES
+    {
+        "origem": r"B:\Victor\PAUTA D\FORNECEDORES PAUTA D\MARCAS PRÓPRIAS\ABERTAS\BITES\INCENTIVO BITES - LANÇAMENTOS.xlsx",
+
+        "destino": r"C:\Users\victor.n\PROJETO\MECÂNICAS\PAUTA D\BITES\INCENTIVO BITES - LANÇAMENTOS.xlsx"
+    },
+
     #CORY
 
     {
