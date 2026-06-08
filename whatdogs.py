@@ -47,10 +47,18 @@ ARQUIVOS = [ #KI-PIPOKA
 
     #FERRERO
     
+    #EQUIPE FERRERO
     {
         "origem": r"B:\Victor\PAUTA D\Ferrero\FERRERO\1. ACOMPANHAMENTOS & CAMPANHAS\2026\Ano Fiscal 25'26\05.MAIO - 2026\Campanhas\Campanha de incentivo - Equipe Ferrero  25'26.xlsx",
 
         "destino": r"C:\Users\victor.n\PROJETO\MECÂNICAS\PAUTA D\FERRERO\INCENTIVO EQUIPE FERRERO - SS 3'2026.xlsx"
+    },
+
+    #MAESTROS
+    {
+        "origem": r"B:\Victor\PAUTA D\Ferrero\FERRERO\1. ACOMPANHAMENTOS & CAMPANHAS\2026\Ano Fiscal 25'26\PROJETO MAESTROS\ACOMPANHAMENTOS - MAESTROS FERRERO 25'26.xlsx",
+
+        "destino": r"C:\Users\victor.n\PROJETO\MECÂNICAS\PAUTA D\FERRERO\ACOMPANHAMENTOS - MAESTROS FERRERO 25'26.xlsx"
     },
 
     #JHONSON
