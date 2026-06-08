@@ -25,7 +25,6 @@ ARQUIVOS = [ #KI-PIPOKA
 
     {
         "origem": r"B:\Anne\7º Acompanhamentos\Cory\CAMPANHA DE INCENTIVO CORY - TRIMESTRAL.xlsx",
-
         "destino": r"C:\Users\victor.n\PROJETO\MECÂNICAS\PAUTA M\CORY\CAMPANHA DE INCENTIVO CORY - TRIMESTRAL.xlsx"
     },
 
@@ -61,22 +60,15 @@ ARQUIVOS = [ #KI-PIPOKA
         "destino": r"C:\Users\victor.n\PROJETO\MECÂNICAS\PAUTA D\FERRERO\ACOMPANHAMENTOS - MAESTROS FERRERO 25'26.xlsx"
     },
 
-    #JHONSON
+    #JOHNSON
     
     #TOP CONTAS
     {
         "origem": r"B:\Nicolas\Acompanhamentos\JOHNSON\2025.26\Q4\Campanha Johnson - Top Contas Q4 FY26.xlsx",
 
-        "destino": r"C:\Users\victor.n\PROJETO\MECÂNICAS\PAUTA D\JHONSON\Campanha Johnson - Top Contas Q4 FY26.xlsx"
+        "destino": r"C:\Users\victor.n\PROJETO\MECÂNICAS\PAUTA D\JOHNSON\Campanha Johnson - Top Contas Q4 FY26.xlsx"
     },
 
-    #MERCHANDISING
-
-    {
-        "origem": r"B:\Nicolas\Acompanhamentos\JOHNSON\2025.26\Q4\Campanha Johnson - Merchandising - FY26.xlsx",
-
-        "destino": r"C:\Users\victor.n\PROJETO\MECÂNICAS\PAUTA D\JHONSON\Campanha Johnson - Merchandising - FY26.xlsx"
-    },
 
 
     #LOJA PERFEITA
@@ -84,7 +76,7 @@ ARQUIVOS = [ #KI-PIPOKA
     {
         "origem": r"B:\Nicolas\Acompanhamentos\JOHNSON\2025.26\Q4\Campanha Johnson - Loja Perfeita 360 Q4 FY26.xlsx",
 
-        "destino": r"C:\Users\victor.n\PROJETO\MECÂNICAS\PAUTA D\JHONSON\Campanha Johnson - Loja Perfeita 360 Q4 FY26.xlsx"
+        "destino": r"C:\Users\victor.n\PROJETO\MECÂNICAS\PAUTA D\JOHNSON\Campanha Johnson - Loja Perfeita 360 Q4 FY26.xlsx"
     },
 
 
