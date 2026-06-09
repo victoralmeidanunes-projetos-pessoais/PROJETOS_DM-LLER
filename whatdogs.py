@@ -86,6 +86,14 @@ ARQUIVOS = [ #KI-PIPOKA
         "destino": r"C:\Users\victor.n\PROJETO\MECÂNICAS\PAUTA D\JOHNSON\Campanha Johnson - Loja Perfeita 360 Q4 FY26.xlsx"
     },
 
+    #NUTRY
+
+    {
+        "origem": r"B:\Victor\PAUTA M\NUTRY\INCENTIVO NUTRY - JUNHO & JULHO.xlsx",
+
+        "destino": r"C:\Users\victor.n\PROJETO\MECÂNICAS\PAUTA M\NUTRY\INCENTIVO NUTRY - JUNHO & JULHO.xlsx"
+    },
+
 
 
 
