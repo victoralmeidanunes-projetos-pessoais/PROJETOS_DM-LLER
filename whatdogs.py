@@ -94,6 +94,22 @@ ARQUIVOS = [ #KI-PIPOKA
         "destino": r"C:\Users\victor.n\PROJETO\MECÂNICAS\PAUTA M\NUTRY\INCENTIVO NUTRY - JUNHO & JULHO.xlsx"
     },
 
+#RAYOVAC
+
+    {
+        "origem": r"B:\Victor\PAUTA D\FORNECEDORES PAUTA D\Rayovac\CAMPANHAS\VIGENTES\RAYOVAC & ENERGIZER - RANKING JUNHO.xlsx",
+
+        "destino": r"C:\Users\victor.n\PROJETO\MECÂNICAS\PAUTA D\RAYOVAC\RAYOVAC & ENERGIZER - RANKING JUNHO.xlsx"
+    },
+
+
+#ENERGIZER
+
+    {
+        "origem": r"B:\Victor\PAUTA D\FORNECEDORES PAUTA D\Rayovac\CAMPANHAS\VIGENTES\RAYOVAC & ENERGIZER - RANKING JUNHO.xlsx",
+
+        "destino": r"C:\Users\victor.n\PROJETO\MECÂNICAS\PAUTA M\ENERGIZER\RAYOVAC & ENERGIZER - RANKING JUNHO.xlsx"
+    }
 
 
 
