@@ -108,7 +108,7 @@ ARQUIVOS = [ #KI-PIPOKA
     {
         "origem": r"C:\Users\victor.n\PROJETO\MECÂNICAS\PAUTA D\RAYOVAC\RAYOVAC & ENERGIZER - RANKING JUNHO.xlsx",
 
-        "destino": r"C:\Users\victor.n\PROJETO\MECÂNICAS\PAUTA M\ENERGIZER\RAYOVAC & ENERGIZER - RANKING JUNHO.xlsx"
+        "destino": r"C:\Users\victor.n\PROJETO\MECÂNICAS\PAUTA M\ENERGIZER\ENERGIZER & RAYOVAC- RANKING JUNHO.xlsx"
     }
 
 
