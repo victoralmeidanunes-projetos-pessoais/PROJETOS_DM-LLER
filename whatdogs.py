@@ -86,6 +86,23 @@ ARQUIVOS = [ #KI-PIPOKA
         "destino": r"C:\Users\victor.n\PROJETO\MECÂNICAS\PAUTA D\JOHNSON\Campanha Johnson - Loja Perfeita 360 Q4 FY26.xlsx"
     },
 
+    #PLANO DE NEGÓCIOS / LIDERANÇA
+
+    {
+        "origem": r"B:\Nicolas\Acompanhamentos\JOHNSON\2025.26\Q4\Acompanhamento Johnson - Plano de Negócios Q4 FY26.xlsx",
+
+        "destino": r"C:\Users\victor.n\PROJETO\MECÂNICAS\PAUTA D\JOHNSON\INCENTIVO LIDERANÇA - PLANO DE NEGÓCIOS JOHNSON.xlsx"
+    },
+
+    #EXPANDINDO
+
+    {
+        "origem": r"B:\Nicolas\Acompanhamentos\JOHNSON\2025.26\Q4\Acompanhamento Johnson - Expandindo Q4 FY26.xlsx",
+
+        "destino": r"C:\Users\victor.n\PROJETO\MECÂNICAS\PAUTA D\JOHNSON\Acompanhamento Johnson - Expandindo Q4 FY26.xlsx"
+    },
+
+
     #NUTRY
 
     {
