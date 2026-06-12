@@ -164,7 +164,7 @@ with st.sidebar:
     # ==========================
 
     st.success(
-    f"👤 Bem-vindo!{st.session_state.usuario}")
+    f"👤 Bem-vindo! {st.session_state.usuario}")
 
     st.info(
     f"🔑 Perfil: {st.session_state.perfil}")
