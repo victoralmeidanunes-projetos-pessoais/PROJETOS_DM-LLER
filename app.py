@@ -35,6 +35,13 @@ if "perfil" not in st.session_state:
 
 def tela_login():
 
+    logo_login = Image.open("LOGO LOGIN.png")
+
+    st.image(
+        logo_login,
+        width=300
+    )
+
     st.title("🔐 Login")
 
     login = st.text_input("Usuário")
@@ -443,7 +450,6 @@ with tab2:
             pasta = os.path.join(
                 caminho_pauta,
                 f
-            )
 
             if not os.path.isdir(pasta):
                 continue
