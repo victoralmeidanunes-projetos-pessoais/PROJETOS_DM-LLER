@@ -167,7 +167,7 @@ with st.sidebar:
     f"👤  {st.session_state.usuario}")
 
     st.info(
-    f"🔑 Perfil: {st.session_state.perfil}")
+    f"🔑  {st.session_state.perfil}")
 
 
 
