@@ -35,17 +35,14 @@ if "perfil" not in st.session_state:
 
 def tela_login():
 
-    def tela_login():
+    col1, col2, col3 = st.columns([1,2,1])
 
-        col1, col2, col3 = st.columns([1,2,1])
+    with col2:
+        st.image("imagens/LOGO LOGIN.png", width=250)
 
-        with col2:
-            st.image("imagens/LOGO LOGIN.png", width=250)
+    
 
-        st.title("🔐 Login")
 
-        login = st.text_input("Usuário")
-        senha = st.text_input("Senha", type="password")
 
     
 
