@@ -35,7 +35,7 @@ if "perfil" not in st.session_state:
 
 def tela_login():
 
-    logo_login = Image.open(r"C:\Users\victor.n\PROJETO\imagens\LOGO LOGIN.png")
+    logo_login = Image.open("LOGO LOGIN.png")
 
     st.image(
         logo_login,
