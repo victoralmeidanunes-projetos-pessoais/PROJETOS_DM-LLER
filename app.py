@@ -7,6 +7,75 @@ from PIL import Image
 from streamlit_pdf_viewer import pdf_viewer
 import os
 
+from db_config import (
+    validar_login,
+    registrar_acesso,
+    listar_acessos,
+    criar_tabela,
+    criar_tabela_historico
+)
+
+# =========================================
+# BANCO
+# =========================================
+
+criar_tabela()
+criar_tabela_historico()
+# =========================================
+# LOGIN
+# =========================================
+
+
+if "logado" not in st.session_state:
+    st.session_state.logado = False
+if "usuario" not in st.session_state:
+    st.session_state.usuario = ""
+if "perfil" not in st.session_state:
+    st.session_state.perfil = ""
+
+def tela_login():
+
+    st.title("🔐 Login")
+
+    login = st.text_input("Usuário")
+
+    senha = st.text_input(
+        "Senha",
+        type="password"
+    )
+
+    if st.button("Entrar"):
+
+        usuario = validar_login(login, senha)
+
+        if usuario:
+
+            registrar_acesso(usuario[1])
+
+            st.session_state.logado = True
+            st.session_state.usuario = usuario[1]
+            st.session_state.perfil = usuario[2]
+
+            st.rerun()
+
+        else:
+
+            st.error(
+                "LOGIN OU SENHA INCORRETOS"
+            )
+
+
+# =========================================
+# BLOQUEIO DO APP
+# =========================================
+
+if not st.session_state.logado:
+
+    tela_login()
+
+    st.stop()
+
+
 # =========================================
 # CONFIG
 # =========================================
@@ -90,7 +159,17 @@ with st.sidebar:
         unsafe_allow_html=True
     )
 
-    st.title("FILTROS")
+    # ==========================
+    # USUÁRIO LOGADO
+    # ==========================
+
+    st.success(
+    f"👤 Bem-vindo!{st.session_state.usuario}")
+
+    st.info(
+    f"🔑 Perfil: {st.session_state.perfil}")
+
+
 
 # =========================================
 # CONTADORES
@@ -241,10 +320,20 @@ pesquisa = st.sidebar.text_input(
 # ABAS
 # =========================================
 
-tab1, tab2 = st.tabs([
-    "📄 MECÂNICAS",
-    "📊 ACOMPANHAMENTOS"
-])
+if st.session_state.perfil == "ADMINISTRADOR":
+
+    tab1, tab2, tab3 = st.tabs([
+        "📄 MECÂNICAS",
+        "📊 ACOMPANHAMENTOS",
+        "🔐 ACESSOS"
+    ])
+
+else:
+
+    tab1, tab2 = st.tabs([
+        "📄 MECÂNICAS",
+        "📊 ACOMPANHAMENTOS"
+    ])
 
 contador = 0
 
@@ -456,6 +545,42 @@ with tab2:
                         )
 
                 st.divider()
+
+# =========================================
+# TAB HISTÓRICO DE ACESSOS
+# =========================================
+
+
+if st.session_state.perfil == "ADMINISTRADOR":
+
+    with tab3:
+
+        st.title("🔐 Histórico de Acessos")
+
+        acessos = listar_acessos()
+
+        if acessos:
+
+            dados = []
+
+            for usuario, data_hora in acessos:
+
+                dados.append({
+                    "Usuário": usuario,
+                    "Data/Hora": data_hora
+                })
+
+            st.dataframe(
+                dados,
+                use_container_width=True,
+                hide_index=True
+            )
+
+        else:
+
+            st.info(
+                "Nenhum acesso registrado."
+            )
 
 # =========================================
 # FOOTER
