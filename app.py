@@ -72,7 +72,7 @@ def tela_login():
         else:
 
             st.error(
-                "app em manutenção"
+                "USUÁRIO OU SENHA INVÁLIDOS"
             )
 
 
@@ -120,7 +120,7 @@ html, body, [class*="css"] {
 }
 
 [data-testid="stSidebar"] {
-    background: #0A58CA;
+    background: #8DAEDD;
 }
 
 .logo-container {
