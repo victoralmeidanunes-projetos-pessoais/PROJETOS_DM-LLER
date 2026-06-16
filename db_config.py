@@ -1,9 +1,21 @@
 # db_config.py
 
 import sqlite3
+import os
 from datetime import datetime
 
-BANCO = "usuarios.db"
+# =========================================
+# BANCO
+# =========================================
+
+BASE_DIR = os.path.dirname(
+    os.path.abspath(__file__)
+)
+
+BANCO = os.path.join(
+    BASE_DIR,
+    "usuarios.db"
+)
 
 
 def conectar():
@@ -23,7 +35,8 @@ def criar_tabela():
         CREATE TABLE IF NOT EXISTS usuarios (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             login TEXT NOT NULL UNIQUE,
-            senha TEXT NOT NULL
+            senha TEXT NOT NULL,
+            perfil TEXT NOT NULL
         )
     """)
 
@@ -56,7 +69,7 @@ def criar_tabela_historico():
 # USUÁRIOS
 # =========================================
 
-def criar_usuario(login, senha):
+def criar_usuario(login, senha, perfil):
 
     conn = conectar()
     cursor = conn.cursor()
@@ -65,17 +78,26 @@ def criar_usuario(login, senha):
 
         cursor.execute(
             """
-            INSERT INTO usuarios (login, senha)
-            VALUES (?, ?)
+            INSERT INTO usuarios
+            (
+                login,
+                senha,
+                perfil
+            )
+            VALUES (?, ?, ?)
             """,
-            (login, senha)
+            (
+                login.strip(),
+                senha.strip(),
+                perfil.strip()
+            )
         )
 
         conn.commit()
 
     except sqlite3.IntegrityError:
 
-        print("Usuário já existe.")
+        print(f"Usuário '{login}' já existe.")
 
     finally:
 
