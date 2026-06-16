@@ -120,7 +120,7 @@ html, body, [class*="css"] {
 }
 
 [data-testid="stSidebar"] {
-    background: linear-gradient(180deg,#0d4caa,#0a3d86);
+    background: #1f2937;
 }
 
 .logo-container {
