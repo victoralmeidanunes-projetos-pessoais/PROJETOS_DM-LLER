@@ -561,7 +561,7 @@ with tab2:
 # =========================================
 
 
-if st.session_state.perfil == "ADMINISTRADOR":
+if st.session_state.perfil == "ADMINISTRADOR MASTER":
 
     with tab3:
 
