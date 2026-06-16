@@ -120,7 +120,7 @@ html, body, [class*="css"] {
 }
 
 [data-testid="stSidebar"] {
-    background: #1f2937;
+    background: #0D6CF9;
 }
 
 .logo-container {
