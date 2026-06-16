@@ -19,6 +19,12 @@ BANCO = os.path.join(
 
 
 def conectar():
+
+    print("\n" + "=" * 70)
+    print("BANCO UTILIZADO:")
+    print(os.path.abspath(BANCO))
+    print("=" * 70 + "\n")
+
     return sqlite3.connect(BANCO)
 
 
@@ -165,6 +171,21 @@ def registrar_acesso(usuario):
     )
 
     conn.commit()
+
+    print(
+        f"ACESSO REGISTRADO: {usuario} - {data_hora}"
+    )
+
+    cursor.execute(
+        "SELECT COUNT(*) FROM historico_acessos"
+    )
+
+    total = cursor.fetchone()[0]
+
+    print(
+        f"TOTAL DE ACESSOS NO BANCO: {total}"
+    )
+
     conn.close()
 
 
@@ -182,6 +203,10 @@ def listar_acessos():
     """)
 
     dados = cursor.fetchall()
+
+    print(
+        f"LISTANDO {len(dados)} ACESSOS"
+    )
 
     conn.close()
 
