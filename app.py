@@ -331,7 +331,7 @@ pesquisa = st.sidebar.text_input(
 # ABAS
 # =========================================
 
-if st.session_state.perfil == "ADMINISTRADOR":
+if st.session_state.perfil == "ADMINISTRADOR MASTER":
 
     tab1, tab2, tab3 = st.tabs([
         "📄 MECÂNICAS",
