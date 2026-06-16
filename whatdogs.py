@@ -1,5 +1,5 @@
 # pip install watchdog pywin32 pillow
-
+from historico import registrar_atualizacao
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
@@ -289,7 +289,14 @@ class MonitorExcel(FileSystemEventHandler):
                 shell=True
             )
 
+            
+
             print("\nGitHub atualizado com sucesso.\n")
+
+            registrar_atualizacao(
+            os.path.basename(destino))
+ 
+
 
         except Exception as e:
 
