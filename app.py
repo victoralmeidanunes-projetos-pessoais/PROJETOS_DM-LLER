@@ -72,7 +72,7 @@ def tela_login():
         else:
 
             st.error(
-                "LOGIN OU SENHA INCORRETOS"
+                "app em manutenção"
             )
 
 
