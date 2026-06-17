@@ -1,6 +1,11 @@
 import sqlite3
+import os
 
-BANCO = "historico.db"
+BASE_DIR = os.path.dirname(
+    os.path.abspath(__file__)
+)
+
+BANCO = os.path.join(BASE_DIR, "historico.db")
 
 
 def conectar():
