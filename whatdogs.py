@@ -43,6 +43,14 @@ ARQUIVOS = [ #KI-PIPOKA
         "destino": r"C:\Users\victor.n\PROJETO\MECÂNICAS\PAUTA M\SANTA HELENA\CAMPANHA INCENTIVO SH - JUNINA 2026.xlsx"
     },
 
+    #SH - VESTINDO A CAMISA
+    
+    {
+        "origem": r"B:\Victor\PAUTA M\SANTA HELENA\CAMPANHA SH\INCENTIVO SANTA HELENA - VESTINDO A CAMISA..xlsx",
+
+        "destino": r"C:\Users\victor.n\PROJETO\MECÂNICAS\PAUTA M\SANTA HELENA\INCENTIVO SANTA HELENA - VESTINDO A CAMISA..xlsx"
+    },
+
     #YPÊ
     
     {
