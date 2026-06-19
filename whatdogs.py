@@ -242,24 +242,36 @@ class MonitorExcel(FileSystemEventHandler):
 
         if caminho not in MAPA:
             return
+        
 
-        # EVITA DUPLICIDADE
-        modificado = time.time()
 
-        ultimo = self.ultimo_processamento.get(caminho)
 
-        if ultimo == modificado:
+        # EVITA EVENTOS DUPLICADOS
+
+        agora = time.time()
+
+        ultimo = self.ultimo_processamento.get(
+            caminho,
+            0)
+
+        if agora - ultimo < 10:
+
+            print(
+                "\nEvento duplicado ignorado.")
+            
+
             return
 
-        self.ultimo_processamento[caminho] = modificado
+        self.ultimo_processamento[caminho] = agora
+
+
+
 
         destino = MAPA[caminho]
 
         try:
 
-            print("\nAguardando Excel liberar arquivo...")
-
-            time.sleep(3)
+            
 
             os.makedirs(
                 os.path.dirname(destino),
@@ -270,10 +282,38 @@ class MonitorExcel(FileSystemEventHandler):
             # COPIA EXCEL
             # =================================
 
-            shutil.copy2(
-                caminho,
-                destino
-            )
+            copiado = False
+
+            for tentativa in range(60):
+
+                try:
+
+                    shutil.copy2(
+                        caminho,
+                        destino
+                        )
+
+                    copiado = True
+
+                    break
+
+                except PermissionError:
+
+                    print(
+                        f"\nArquivo bloqueado. "
+                        f"Tentativa {tentativa+1}/60"
+                    )
+
+                time.sleep(1)
+
+            if not copiado:
+
+                print(
+                    "\nArquivo não foi liberado "
+                    "em 60 segundos."
+                )
+
+                return
 
             print(f"\nCopiado com sucesso:")
             print(caminho)
@@ -303,7 +343,7 @@ class MonitorExcel(FileSystemEventHandler):
 
             registrar_atualizacao(
             os.path.basename(destino))
- 
+
 
 
         except Exception as e:
@@ -314,7 +354,7 @@ class MonitorExcel(FileSystemEventHandler):
     # EVENTOS
     # =====================================
 
-    def on_any_event(self, event):
+    def on_modified(self, event):
 
         if event.is_directory:
             return

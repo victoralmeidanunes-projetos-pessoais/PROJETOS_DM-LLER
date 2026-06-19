@@ -15,6 +15,8 @@ from db_config import (
     criar_tabela_historico
 )
 
+from historico import (listar_atualizacoes,listar_ultimas_atualizacoes)
+
 # =========================================
 # BANCO
 # =========================================
@@ -333,10 +335,11 @@ pesquisa = st.sidebar.text_input(
 
 if st.session_state.perfil == "ADMINISTRADOR MASTER":
 
-    tab1, tab2, tab3 = st.tabs([
+    tab1, tab2, tab3, tab4= st.tabs([
         "📄 MECÂNICAS",
         "📊 ACOMPANHAMENTOS",
-        "🔐 ACESSOS"
+        "🔐 ACESSOS",
+        "🕛 ATUALIZAÇÕES"
     ])
 
 else:
@@ -592,6 +595,56 @@ if st.session_state.perfil == "ADMINISTRADOR MASTER":
                 "Nenhum acesso registrado."
             )
 
+# =========================================
+# TAB HISTÓRICO DE ATT
+# =========================================
+
+
+if st.session_state.perfil == "ADMINISTRADOR MASTER":
+
+    with tab4:
+
+        st.title("🕛 Histórico de Atualizações")
+
+        tipo_visualizacao = st.radio(
+            "Visualização",
+            [
+                "Ver últimas",
+                "Ver todas"
+            ],
+            horizontal=True
+        )
+
+        if tipo_visualizacao == "Ver últimas":
+
+            atualizacoes = listar_ultimas_atualizacoes()
+
+        else:
+
+            atualizacoes = listar_atualizacoes()
+
+        if atualizacoes:
+
+            dados = []
+
+            for arquivo, data_hora in atualizacoes:
+
+                dados.append({
+                    "Arquivo": arquivo,
+                    "Data/Hora": data_hora
+                })
+
+            st.dataframe(
+                dados,
+                use_container_width=True,
+                hide_index=True
+            )
+
+        else:
+
+            st.info(
+                "Nenhuma atualização registrada."
+            )
 # =========================================
 # FOOTER
 # =========================================
