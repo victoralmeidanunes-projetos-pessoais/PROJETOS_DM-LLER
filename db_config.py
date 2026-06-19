@@ -50,26 +50,6 @@ def criar_tabela():
     conn.close()
 
 
-# =========================================
-# TABELA HISTÓRICO
-# =========================================
-
-def criar_tabela_historico():
-
-    conn = conectar()
-    cursor = conn.cursor()
-
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS historico_acessos (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            usuario TEXT NOT NULL,
-            data_hora TEXT NOT NULL
-        )
-    """)
-
-    conn.commit()
-    conn.close()
-
 
 # =========================================
 # USUÁRIOS
@@ -146,68 +126,66 @@ def validar_login(login, senha):
 # HISTÓRICO
 # =========================================
 
+from supabase_config import supabase
+
 def registrar_acesso(usuario):
 
-    conn = conectar()
-    cursor = conn.cursor()
+    try:
 
-    data_hora = datetime.now().strftime(
-        "%d/%m/%Y %H:%M:%S"
-    )
+        supabase.table(
+            "acessos"
+        ).insert({
 
-    cursor.execute(
-        """
-        INSERT INTO historico_acessos
-        (
-            usuario,
-            data_hora
+            "usuario": usuario
+
+        }).execute()
+
+        print(
+            f"Acesso registrado: {usuario}"
         )
-        VALUES (?, ?)
-        """,
-        (
-            usuario,
-            data_hora
+
+    except Exception as e:
+
+        print(
+            f"Erro ao registrar acesso: {e}"
         )
-    )
-
-    conn.commit()
-
-    print(
-        f"ACESSO REGISTRADO: {usuario} - {data_hora}"
-    )
-
-    cursor.execute(
-        "SELECT COUNT(*) FROM historico_acessos"
-    )
-
-    total = cursor.fetchone()[0]
-
-    print(
-        f"TOTAL DE ACESSOS NO BANCO: {total}"
-    )
-
-    conn.close()
 
 
 def listar_acessos():
 
-    conn = conectar()
-    cursor = conn.cursor()
+    try:
 
-    cursor.execute("""
-        SELECT
-            usuario,
-            data_hora
-        FROM historico_acessos
-        ORDER BY id DESC
-    """)
+        resultado = (
+            supabase
+            .table("acessos")
+            .select("*")
+            .order(
+                "id",
+                desc=True
+            )
+            .execute()
+        )
 
-    dados = cursor.fetchall()
+        dados = []
 
-    print(
-        f"LISTANDO {len(dados)} ACESSOS"
-    )
+        for linha in resultado.data:
 
-    conn.close()
+            dados.append(
+                (
+                    linha["usuario"],
+                    linha["data_hora"]
+                )
+            )
 
-    return dados
+        return dados
+
+    except Exception as e:
+
+        print(
+            f"Erro ao listar acessos: {e}"
+        )
+
+        return []
+
+
+from supabase_config import supabase

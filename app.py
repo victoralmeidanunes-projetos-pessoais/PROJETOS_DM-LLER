@@ -12,7 +12,7 @@ from db_config import (
     registrar_acesso,
     listar_acessos,
     criar_tabela,
-    criar_tabela_historico
+
 )
 
 from historico import (listar_atualizacoes,listar_ultimas_atualizacoes)
@@ -22,7 +22,7 @@ from historico import (listar_atualizacoes,listar_ultimas_atualizacoes)
 # =========================================
 
 criar_tabela()
-criar_tabela_historico()
+
 # =========================================
 # LOGIN
 # =========================================
