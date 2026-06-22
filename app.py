@@ -18,6 +18,16 @@ from db_config import (
 from historico import (listar_atualizacoes,listar_ultimas_atualizacoes)
 
 # =========================================
+# CONFIG
+# =========================================
+
+st.set_page_config(
+    page_title="Campanhas",
+    layout="wide", 
+    page_icon="📊"
+)
+
+# =========================================
 # BANCO
 # =========================================
 
@@ -87,17 +97,6 @@ if not st.session_state.logado:
     tela_login()
 
     st.stop()
-
-
-# =========================================
-# CONFIG
-# =========================================
-
-st.set_page_config(
-    page_title="Campanhas",
-    layout="wide", 
-    page_icon="📊"
-)
 
 PASTA_RAIZ = "MECÂNICAS"
 
