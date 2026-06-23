@@ -567,7 +567,9 @@ if st.session_state.perfil == "ADMINISTRADOR MASTER":
 
     with tab3:
 
-        print("TAB ACESSOS")
+        st.title("🔐 PÁGINA EM DESENVOLVIMENTO")
+
+        
 
 # =========================================
 # TAB HISTÓRICO DE ATT
