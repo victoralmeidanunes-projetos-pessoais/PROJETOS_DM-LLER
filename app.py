@@ -9,8 +9,6 @@ import os
 
 from db_config import (
     validar_login,
-    registrar_acesso,
-    listar_acessos,
     criar_tabela,
 
 )
@@ -73,7 +71,7 @@ def tela_login():
 
         if usuario:
 
-            registrar_acesso(usuario[1])
+            # registrar_acesso(usuario[1])
 
             st.session_state.logado = True
             st.session_state.usuario = usuario[1]
@@ -563,36 +561,36 @@ with tab2:
 # =========================================
 
 
-if st.session_state.perfil == "ADMINISTRADOR MASTER":
+# if st.session_state.perfil == "ADMINISTRADOR MASTER":
 
-    with tab3:
+#     with tab3:
 
-        st.title("🔐 Histórico de Acessos")
+#         st.title("🔐 Histórico de Acessos")
 
-        acessos = listar_acessos()
+#         acessos = listar_acessos()
 
-        if acessos:
+#         if acessos:
 
-            dados = []
+#             dados = []
 
-            for usuario, data_hora in acessos:
+#             for usuario, data_hora in acessos:
 
-                dados.append({
-                    "Usuário": usuario,
-                    "Data/Hora": data_hora
-                })
+#                 dados.append({
+#                     "Usuário": usuario,
+#                     "Data/Hora": data_hora
+#                 })
 
-            st.dataframe(
-                dados,
-                use_container_width=True,
-                hide_index=True
-            )
+#             st.dataframe(
+#                 dados,
+#                 use_container_width=True,
+#                 hide_index=True
+#             )
 
-        else:
+#         else:
 
-            st.info(
-                "Nenhum acesso registrado."
-            )
+#             st.info(
+#                 "Nenhum acesso registrado."
+#             )
 
 # =========================================
 # TAB HISTÓRICO DE ATT
