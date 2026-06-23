@@ -3,7 +3,6 @@ pandas
 openpyxl
 Pillow
 pyxlsb
-supabase
 streamlit-pdf-viewer
 python-multipart==0.0.28
 rpds-py==0.30.0
