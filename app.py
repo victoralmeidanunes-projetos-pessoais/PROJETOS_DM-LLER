@@ -9,28 +9,20 @@ import os
 
 from db_config import (
     validar_login,
+    registrar_acesso,
+    listar_acessos,
     criar_tabela,
-
+    criar_tabela_historico
 )
 
 from historico import (listar_atualizacoes,listar_ultimas_atualizacoes)
-
-# =========================================
-# CONFIG
-# =========================================
-
-st.set_page_config(
-    page_title="Campanhas",
-    layout="wide", 
-    page_icon="📊"
-)
 
 # =========================================
 # BANCO
 # =========================================
 
 criar_tabela()
-
+criar_tabela_historico()
 # =========================================
 # LOGIN
 # =========================================
@@ -71,7 +63,7 @@ def tela_login():
 
         if usuario:
 
-            # registrar_acesso(usuario[1])
+            registrar_acesso(usuario[1])
 
             st.session_state.logado = True
             st.session_state.usuario = usuario[1]
@@ -95,6 +87,17 @@ if not st.session_state.logado:
     tela_login()
 
     st.stop()
+
+
+# =========================================
+# CONFIG
+# =========================================
+
+st.set_page_config(
+    page_title="Campanhas",
+    layout="wide", 
+    page_icon="📊"
+)
 
 PASTA_RAIZ = "MECÂNICAS"
 
@@ -561,36 +564,36 @@ with tab2:
 # =========================================
 
 
-# if st.session_state.perfil == "ADMINISTRADOR MASTER":
+if st.session_state.perfil == "ADMINISTRADOR MASTER":
 
-#     with tab3:
+    with tab3:
 
-#         st.title("🔐 Histórico de Acessos")
+        st.title("🔐 Histórico de Acessos")
 
-#         acessos = listar_acessos()
+        acessos = listar_acessos()
 
-#         if acessos:
+        if acessos:
 
-#             dados = []
+            dados = []
 
-#             for usuario, data_hora in acessos:
+            for usuario, data_hora in acessos:
 
-#                 dados.append({
-#                     "Usuário": usuario,
-#                     "Data/Hora": data_hora
-#                 })
+                dados.append({
+                    "Usuário": usuario,
+                    "Data/Hora": data_hora
+                })
 
-#             st.dataframe(
-#                 dados,
-#                 use_container_width=True,
-#                 hide_index=True
-#             )
+            st.dataframe(
+                dados,
+                use_container_width=True,
+                hide_index=True
+            )
 
-#         else:
+        else:
 
-#             st.info(
-#                 "Nenhum acesso registrado."
-#             )
+            st.info(
+                "Nenhum acesso registrado."
+            )
 
 # =========================================
 # TAB HISTÓRICO DE ATT
